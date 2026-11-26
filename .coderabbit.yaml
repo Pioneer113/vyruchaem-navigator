@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: "ru-RU"
+early_access: false
+reviews:
+  profile: "chill"
+  high_level_summary: true
+  review_status: true
+  poem: false
+  auto_review:
+    enabled: true
+    drafts: false
+  path_instructions:
+    - path: "src/data/**"
+      instructions: |
+        Это данные продукта для благополучателей фонда «Выручаем».
+        Проверяй: у каждой программы есть источник (sourceUrl) и дата проверки (verifiedAt);
+        есть шаги получения, документы и честные ожидания; нет выдуманных адресов и телефонов;
+        тексты на русском, простым языком, без жаргона; ничего не обещает гарантированную помощь.
+    - path: "src/**/*.test.*"
+      instructions: |
+        Тесты должны проверять поведение, а не реализацию. Не предлагай мокать то,
+        что можно проверить настоящим кодом. Имена тестов — по-русски, описывают сценарий.
+    - path: "src/screens/**"
+      instructions: |
+        Интерфейс для людей в трудной ситуации: крупный шрифт, минимум шагов,
+        понятные подписи, никаких форм, собирающих персональные данные.
+chat:
+  auto_reply: true
