@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { PROGRAMS, REGIONS, SITUATIONS, programsForSituation } from './index'
+import {
+  PROGRAMS,
+  REGIONS,
+  SITUATIONS,
+  URGENT_NOTE,
+  URGENT_ROUTES,
+  findProgram,
+  programsForSituation,
+} from './index'
 
 describe('данные навигатора', () => {
   it('шесть ситуаций и вариант «другая»', () => {
@@ -21,16 +29,43 @@ describe('данные навигатора', () => {
     for (const program of PROGRAMS) {
       expect(program.title).toBeTruthy()
       expect(program.benefit).toBeTruthy()
+      expect(program.audienceNote).toBeTruthy()
       expect(program.sourceUrl).toMatch(/^https:\/\//)
+      expect(program.sourceName).toBeTruthy()
       expect(program.verifiedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/)
       expect(['direct', 'partner']).toContain(program.channel)
+      expect(['active', 'until', 'ended']).toContain(program.status)
     }
   })
 
-  it('«Праздник на стол» — прямая заявка с дедлайном 20.12.2026', () => {
-    const program = PROGRAMS.find((p) => p.id === 'prazdnik')
-    expect(program?.channel).toBe('direct')
-    expect(program?.deadline).toBe('2026-12-20')
+  it('у каждой программы есть шаги, документы и честные ожидания', () => {
+    for (const program of PROGRAMS) {
+      expect(program.steps.length).toBeGreaterThanOrEqual(3)
+      expect(program.documents.length).toBeGreaterThanOrEqual(1)
+      expect(program.expectations.length).toBeGreaterThan(20)
+      expect(program.statusNote).toBeTruthy()
+    }
+  })
+
+  it('«Праздник на стол»: онлайн-заявка до 20.12.2026, справка только PDF', () => {
+    const program = findProgram('prazdnik')!
+    expect(program.channel).toBe('direct')
+    expect(program.deadline).toBe('2026-12-20')
+    expect(program.steps[0]).toContain('елкажеланий')
+    expect(program.documents.join(' ')).toMatch(/PDF/)
+  })
+
+  it('«Корзина доброты» честно говорит: наборы развозят по спискам, прийти нельзя', () => {
+    const program = findProgram('korzina')!
+    expect(program.expectations).toMatch(/списк/)
+    expect(program.expectations).toMatch(/нельзя/)
+  })
+
+  it('срочные маршруты: 112, Красный Крест и честная строка про сегодня', () => {
+    const ids = URGENT_ROUTES.map((route) => route.id)
+    expect(ids).toContain('112')
+    expect(URGENT_ROUTES.some((route) => route.title.includes('Красный Крест'))).toBe(true)
+    expect(URGENT_NOTE).toMatch(/не выдаёт еду в день обращения/)
   })
 
   it('список регионов — 85 субъектов, Москва и Петербург первыми', () => {

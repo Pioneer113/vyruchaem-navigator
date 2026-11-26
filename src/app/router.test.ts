@@ -25,6 +25,15 @@ describe('маршруты', () => {
     })
   })
 
+  it('карточка программы', () => {
+    expect(parseRoute('#/program/pensioner/moscow/ezhden')).toEqual({
+      name: 'program',
+      situationId: 'pensioner',
+      regionId: 'moscow',
+      programId: 'ezhden',
+    })
+  })
+
   it('неизвестная ситуация — главная', () => {
     expect(parseRoute('#/situation/nope')).toEqual({ name: 'home' })
   })
@@ -33,8 +42,15 @@ describe('маршруты', () => {
     expect(parseRoute('#/result/pensioner/nope')).toEqual({ name: 'home' })
   })
 
+  it('неизвестная программа — главная', () => {
+    expect(parseRoute('#/program/pensioner/moscow/nope')).toEqual({ name: 'home' })
+  })
+
   it('hashFor собирает адреса', () => {
     expect(hashFor.result('pensioner', 'moscow')).toBe('#/result/pensioner/moscow')
     expect(hashFor.situation('family')).toBe('#/situation/family')
+    expect(hashFor.program('pensioner', 'moscow', 'ezhden')).toBe(
+      '#/program/pensioner/moscow/ezhden',
+    )
   })
 })

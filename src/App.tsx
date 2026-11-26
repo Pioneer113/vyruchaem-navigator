@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { hashFor, navigate, parseRoute } from './app/router'
 import type { Route } from './app/router'
 import { saveRegion } from './app/storage'
-import { findRegion, findSituation } from './data'
+import { findProgram, findRegion, findSituation } from './data'
+import { ProgramScreen } from './screens/ProgramScreen'
 import { RegionScreen } from './screens/RegionScreen'
 import { ResultScreen } from './screens/ResultScreen'
 import { SituationScreen } from './screens/SituationScreen'
+import { UrgentScreen } from './screens/UrgentScreen'
 
 export default function App() {
   const [route, setRoute] = useState<Route>(() => parseRoute(window.location.hash))
@@ -15,6 +17,8 @@ export default function App() {
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [])
+
+  const situation = 'situationId' in route ? findSituation(route.situationId) : undefined
 
   return (
     <main className="app">
@@ -28,9 +32,9 @@ export default function App() {
         <SituationScreen onPick={(situationId) => navigate(hashFor.situation(situationId))} />
       )}
 
-      {route.name === 'region' && (
+      {route.name === 'region' && situation && (
         <RegionScreen
-          situation={findSituation(route.situationId)!}
+          situation={situation}
           onBack={() => navigate(hashFor.home())}
           onPick={(regionId) => {
             saveRegion(regionId)
@@ -39,11 +43,32 @@ export default function App() {
         />
       )}
 
-      {route.name === 'result' && (
-        <ResultScreen
-          situation={findSituation(route.situationId)!}
+      {route.name === 'result' && situation && (
+        <>
+          {situation.kind === 'urgent' ? (
+            <UrgentScreen
+              region={findRegion(route.regionId)!}
+              onBack={() => navigate(hashFor.situation(route.situationId))}
+            />
+          ) : (
+            <ResultScreen
+              situation={situation}
+              region={findRegion(route.regionId)!}
+              onBack={() => navigate(hashFor.situation(route.situationId))}
+              onOpenProgram={(programId) =>
+                navigate(hashFor.program(route.situationId, route.regionId, programId))
+              }
+            />
+          )}
+        </>
+      )}
+
+      {route.name === 'program' && situation && (
+        <ProgramScreen
+          program={findProgram(route.programId)!}
+          situation={situation}
           region={findRegion(route.regionId)!}
-          onBack={() => navigate(hashFor.situation(route.situationId))}
+          onBack={() => navigate(hashFor.result(route.situationId, route.regionId))}
         />
       )}
 
