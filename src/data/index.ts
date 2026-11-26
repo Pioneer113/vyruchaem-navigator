@@ -48,6 +48,15 @@ export interface UrgentRoute {
   urlLabel?: string
 }
 
+export interface RouteInfo {
+  id: string
+  title: string
+  text: string
+  phone?: string
+  url?: string
+  urlLabel?: string
+}
+
 export const URGENT_NOTE =
   'Онлайн-заявка не выдаёт еду в день обращения. Сегодня помогут личное обращение в соцзащиту, звонок в Красный Крест и карта пунктов.'
 
@@ -89,6 +98,36 @@ export const URGENT_ROUTES: UrgentRoute[] = [
     text: 'Карта «корзин» и «холодильников» с бесплатными продуктами.',
     url: 'https://helpfood.ru/',
     urlLabel: 'helpfood.ru',
+  },
+]
+
+export const ROUTES: RouteInfo[] = [
+  {
+    id: 'szn',
+    title: 'Соцзащита по месту жительства',
+    text: 'Адресная помощь и продуктовые наборы — региональные меры поддержки. Спросите, что положено именно вам.',
+  },
+  {
+    id: 'rkk',
+    title: 'Красный Крест',
+    text: 'Продуктовые наборы, гигиена и одежда. Горячая линия работает по будням с 10:00 до 19:00 (МСК).',
+    phone: '8 800 234-07-07',
+    url: 'https://redcross.ru/activity/sluzhba-pomoshchi-adresnaya-podderzhka-dlya-lyudey-v-trudnoy-zhiznennoy-situatsii/',
+    urlLabel: 'redcross.ru',
+  },
+  {
+    id: 'rus',
+    title: 'Банк еды «Русь»',
+    text: '17 региональных банков. Заявка — в ВК-группе вашего региона, тема «Стать благополучателем».',
+    url: 'https://foodbankrus.ru/nuzhna-pomosch/',
+    urlLabel: 'foodbankrus.ru',
+  },
+  {
+    id: 'dobro',
+    title: 'Добро.Навигатор',
+    text: 'Каталог 5 800+ мер поддержки: поиск по региону и виду помощи.',
+    url: 'https://navigator.dobro.ru/',
+    urlLabel: 'navigator.dobro.ru',
   },
 ]
 

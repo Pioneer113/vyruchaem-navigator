@@ -44,4 +44,26 @@ describe('приложение', () => {
     expect(screen.getByText('112')).toBeInTheDocument()
     expect(screen.getByText(/не выдаёт еду в день обращения/)).toBeInTheDocument()
   })
+
+  it('показывает другие маршруты под карточками программ', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Я одинокий пенсионер' }))
+    await user.click(await screen.findByRole('button', { name: /Москва/ }))
+
+    expect(await screen.findByText('Другие маршруты')).toBeInTheDocument()
+    expect(screen.getByText('Банк еды «Русь»')).toBeInTheDocument()
+  })
+
+  it('для «другая ситуация» показывает только маршруты', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Моя ситуация другая' }))
+    await user.click(await screen.findByRole('button', { name: /Москва/ }))
+
+    expect(await screen.findByText('Куда ещё обратиться')).toBeInTheDocument()
+    expect(screen.getByText('Добро.Навигатор')).toBeInTheDocument()
+  })
 })
