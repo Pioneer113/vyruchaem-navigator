@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
 
@@ -29,8 +29,10 @@ describe('приложение', () => {
     expect(localStorage.getItem('vyruchaem.region')).toBe('moscow')
 
     await user.click(screen.getAllByRole('button', { name: 'Подробнее' })[0])
-    expect(await screen.findByText('Как получить')).toBeInTheDocument()
-    expect(screen.getByText(/Проверено 26\.11\.2026/)).toBeInTheDocument()
+    const printButton = await screen.findByRole('button', { name: 'Распечатать памятку' })
+    const scope = printButton.closest('.screen') as HTMLElement
+    expect(within(scope).getByText('Как получить')).toBeInTheDocument()
+    expect(within(scope).getByText(/Проверено 26\.11\.2026/)).toBeInTheDocument()
   })
 
   it('для срочной ситуации показывает маршруты «сегодня»', async () => {
@@ -65,5 +67,37 @@ describe('приложение', () => {
 
     expect(await screen.findByText('Куда ещё обратиться')).toBeInTheDocument()
     expect(screen.getByText('Добро.Навигатор')).toBeInTheDocument()
+  })
+
+  it('переключает размер шрифта и запоминает выбор', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const button = screen.getByRole('button', { name: /шрифт/i })
+    expect(button).toHaveTextContent('обычный')
+
+    await user.click(button)
+    expect(document.documentElement.dataset.font).toBe('large')
+    expect(localStorage.getItem('vyruchaem.font')).toBe('large')
+    expect(button).toHaveTextContent('крупный')
+  })
+
+  it('печатает памятку с QR-кодом', async () => {
+    const user = userEvent.setup()
+    const printSpy = vi.spyOn(window, 'print').mockImplementation(() => {})
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Я одинокий пенсионер' }))
+    await user.click(await screen.findByRole('button', { name: /Москва/ }))
+    await user.click(screen.getAllByRole('button', { name: 'Подробнее' })[0])
+    await user.click(await screen.findByRole('button', { name: 'Распечатать памятку' }))
+
+    expect(printSpy).toHaveBeenCalledTimes(1)
+    const memo = screen.getByTestId('print-memo')
+    expect(within(memo).getByText('Выручаем каждый день')).toBeInTheDocument()
+    expect(within(memo).getByRole('img', { name: /QR/i })).toBeInTheDocument()
+    expect(within(memo).getByText(/всё равно обратитесь/)).toBeInTheDocument()
+
+    printSpy.mockRestore()
   })
 })
