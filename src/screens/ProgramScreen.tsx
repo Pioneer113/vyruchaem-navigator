@@ -107,6 +107,7 @@ export function ProgramScreen({ program, situation, region, onBack }: Props) {
             <li key={document}>{document}</li>
           ))}
         </ul>
+        {program.documentsNote && <p className="pm-note">{program.documentsNote}</p>}
         <div className="pm-foot">
           <img
             className="pm-qr"

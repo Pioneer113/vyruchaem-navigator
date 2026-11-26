@@ -96,6 +96,7 @@ describe('приложение', () => {
     const memo = screen.getByTestId('print-memo')
     expect(within(memo).getByText('Выручаем каждый день')).toBeInTheDocument()
     expect(within(memo).getByRole('img', { name: /QR/i })).toBeInTheDocument()
+    expect(within(memo).getByText(/всё равно обратитесь/)).toBeInTheDocument()
 
     printSpy.mockRestore()
   })

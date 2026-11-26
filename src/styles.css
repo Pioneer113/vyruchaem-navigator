@@ -616,6 +616,10 @@ html[data-font='xlarge'] body {
     zoom: 1;
   }
 
+  html[data-font] body {
+    zoom: 1;
+  }
+
   .app {
     padding: 0;
     max-width: none;
