@@ -3,3 +3,8 @@ dist/
 .superpowers/
 *.local
 .DS_Store
+
+# Внутренние ТЗ и отчёты аудита не публикуем
+docs/*spec*.md
+docs/*findings*.md
+specs/
