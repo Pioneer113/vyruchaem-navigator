@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react'
 import { hashFor, navigate, parseRoute } from './app/router'
 import type { Route } from './app/router'
 import { saveRegion } from './app/storage'
+import {
+  applyFontScale,
+  FONT_LABELS,
+  getFontScale,
+  nextFontScale,
+  saveFontScale,
+} from './app/fontScale'
 import { findProgram, findRegion, findSituation } from './data'
 import { ProgramScreen } from './screens/ProgramScreen'
 import { RegionScreen } from './screens/RegionScreen'
@@ -11,6 +18,11 @@ import { UrgentScreen } from './screens/UrgentScreen'
 
 export default function App() {
   const [route, setRoute] = useState<Route>(() => parseRoute(window.location.hash))
+  const [fontScale, setFontScale] = useState(() => getFontScale())
+
+  useEffect(() => {
+    applyFontScale(fontScale)
+  }, [fontScale])
 
   useEffect(() => {
     const onHashChange = () => setRoute(parseRoute(window.location.hash))
@@ -25,6 +37,17 @@ export default function App() {
       <header className="topbar">
         <button className="brand" type="button" onClick={() => navigate(hashFor.home())}>
           Выручаем · навигатор помощи
+        </button>
+        <button
+          className="font-btn"
+          type="button"
+          onClick={() => {
+            const next = nextFontScale(fontScale)
+            setFontScale(next)
+            saveFontScale(next)
+          }}
+        >
+          Шрифт: {FONT_LABELS[fontScale]}
         </button>
       </header>
 
