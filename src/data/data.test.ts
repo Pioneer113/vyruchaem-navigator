@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   PROGRAMS,
   REGIONS,
+  ROUTES,
   SITUATIONS,
   URGENT_NOTE,
   URGENT_ROUTES,
@@ -66,6 +67,18 @@ describe('данные навигатора', () => {
     expect(ids).toContain('112')
     expect(URGENT_ROUTES.some((route) => route.title.includes('Красный Крест'))).toBe(true)
     expect(URGENT_NOTE).toMatch(/не выдаёт еду в день обращения/)
+  })
+
+  it('другие маршруты: соцзащита, Красный Крест, банк еды, Добро.Навигатор', () => {
+    const ids = ROUTES.map((route) => route.id)
+    expect(ids).toContain('szn')
+    expect(ids).toContain('rkk')
+    expect(ids).toContain('rus')
+    expect(ids).toContain('dobro')
+    for (const route of ROUTES) {
+      expect(route.title).toBeTruthy()
+      expect(route.text.length).toBeGreaterThan(10)
+    }
   })
 
   it('список регионов — 85 субъектов, Москва и Петербург первыми', () => {

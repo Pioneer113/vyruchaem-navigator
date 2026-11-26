@@ -425,3 +425,52 @@ h1 {
   font-size: 15px;
   font-weight: 600;
 }
+
+/* Другие маршруты */
+.routes-list {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+@media (min-width: 720px) {
+  .routes-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.route-item {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.r-title {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.r-text {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.r-links {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.r-links a {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
