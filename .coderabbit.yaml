@@ -6,6 +6,8 @@ reviews:
   high_level_summary: true
   review_status: true
   poem: false
+  auto_approvals:
+    enabled: false
   path_filters:
     - "!package-lock.json"
     - "!dist/**"
