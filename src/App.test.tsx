@@ -297,6 +297,15 @@ describe('приложение', () => {
     expect(screen.queryByText('Сколько ждать')).not.toBeInTheDocument()
   })
 
+  it('памятка скидки печатает важные ограничения', () => {
+    window.location.hash = '#/program/pensioner/moscow/senior-discount'
+    render(<App />)
+
+    const memo = screen.getByTestId('print-memo')
+    expect(within(memo).getByText('Важные ограничения')).toBeInTheDocument()
+    expect(within(memo).getByText(/Красную цену/)).toBeInTheDocument()
+  })
+
   it('сертификат: инструкция сразу, без выбора региона и с горячими линиями', async () => {
     const user = userEvent.setup()
     render(<App />)
@@ -325,6 +334,15 @@ describe('приложение', () => {
     expect(window.location.hash).toBe('#/certificate')
   })
 
+  it('экран сертификата не скрывается при печати', () => {
+    window.location.hash = '#/certificate'
+    render(<App />)
+
+    const heading = screen.getByRole('heading', { name: 'Как потратить продуктовый сертификат' })
+    const section = heading.closest('section')!
+    expect(section.classList.contains('screen--printable')).toBe(true)
+  })
+
   it('чек критериев «Праздника»: «Нет» даёт объяснение и путь к «Корзине»', async () => {
     const user = userEvent.setup()
     window.location.hash = '#/program/family/moscow/prazdnik'
@@ -345,6 +363,7 @@ describe('приложение', () => {
     expect(
       screen.getByText(/Для этой заявки не подходит — посмотрите программы без возрастного ценза/),
     ).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent(/Для этой заявки не подходит/)
     await user.click(screen.getByRole('button', { name: 'Корзина доброты' }))
     expect(window.location.hash).toBe('#/program/family/moscow/korzina')
     expect(await screen.findByRole('button', { name: 'Распечатать памятку' })).toBeInTheDocument()
@@ -361,6 +380,7 @@ describe('приложение', () => {
       await user.click(within(row as HTMLElement).getByRole('button', { name: 'Да' }))
     }
     expect(screen.getByText(/По основным критериям подходите/)).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent(/По основным критериям подходите/)
     expect(screen.queryByRole('button', { name: 'Корзина доброты' })).not.toBeInTheDocument()
   })
 

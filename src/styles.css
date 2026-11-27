@@ -739,6 +739,14 @@ html[data-font='xlarge'] {
     display: none !important;
   }
 
+  .screen--printable {
+    display: block !important;
+  }
+
+  .screen--printable .back {
+    display: none;
+  }
+
   .print-memo {
     display: block;
   }

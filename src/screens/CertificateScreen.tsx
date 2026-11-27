@@ -10,7 +10,7 @@ export function CertificateScreen({ onBack }: Props) {
   const info = CERTIFICATE_INFO
 
   return (
-    <section className="screen">
+    <section className="screen screen--printable">
       <button className="back" type="button" onClick={onBack}>
         ← К выбору ситуации
       </button>

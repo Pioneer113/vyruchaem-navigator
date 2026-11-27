@@ -78,13 +78,13 @@ function ReadinessCheck({
         </div>
       ))}
       {allAnswered && firstNo === -1 && (
-        <p className="check-ok">
+        <p className="check-ok" role="status">
           По основным критериям подходите — можно заполнять заявку на елкажеланий.рф
         </p>
       )}
       {firstNo !== -1 && (
         <div className="check-no">
-          <p>{READINESS_QUESTIONS[firstNo].reason}</p>
+          <p role="status">{READINESS_QUESTIONS[firstNo].reason}</p>
           <div className="check-alts">
             <button
               type="button"
@@ -250,6 +250,12 @@ export function ProgramScreen({
           ))}
         </ul>
         {program.documentsNote && <p className="pm-note">{program.documentsNote}</p>}
+        {program.channel === 'store' && (
+          <>
+            <h2 className="pm-h">Важные ограничения</h2>
+            <p className="pm-note">{program.expectations}</p>
+          </>
+        )}
         {sayScript && (
           <>
             <h2 className="pm-h">Что сказать</h2>
