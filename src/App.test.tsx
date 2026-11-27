@@ -2,6 +2,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
+import { findProgram, findRegion, findSituation } from './data'
+import { ProgramScreen } from './screens/ProgramScreen'
+import { ResultScreen } from './screens/ResultScreen'
 
 describe('приложение', () => {
   beforeEach(() => {
@@ -354,5 +357,71 @@ describe('приложение', () => {
     }
     expect(screen.getByText(/По основным критериям подходите/)).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Корзина доброты' })).not.toBeInTheDocument()
+  })
+
+  it('блок проверенных организаций появляется с переданным реестром', () => {
+    const fixture = [
+      {
+        id: 'test-org',
+        name: 'Тестовая организация (фикстура, не реальная)',
+        regionId: 'moscow',
+        city: 'Москва',
+        programs: ['korzina'],
+        phone: '8 800 000-00-00',
+        acceptingRequests: true,
+        verifiedAt: '2026-11-27',
+      },
+    ]
+    render(
+      <ResultScreen
+        situation={findSituation('pensioner')!}
+        region={findRegion('moscow')!}
+        onBack={() => {}}
+        onOpenProgram={() => {}}
+        partners={fixture}
+      />,
+    )
+    expect(screen.getByText('Проверенные организации в вашем регионе')).toBeInTheDocument()
+    expect(
+      screen.getByText('Тестовая организация (фикстура, не реальная)'),
+    ).toBeInTheDocument()
+  })
+
+  it('блок организаций есть и на экране программы с реестром', () => {
+    const fixture = [
+      {
+        id: 'test-org',
+        name: 'Тестовая организация (фикстура, не реальная)',
+        regionId: 'moscow',
+        city: 'Москва',
+        programs: ['korzina'],
+        acceptingRequests: true,
+        verifiedAt: '2026-11-27',
+      },
+    ]
+    render(
+      <ProgramScreen
+        program={findProgram('korzina')!}
+        situation={findSituation('pensioner')!}
+        region={findRegion('moscow')!}
+        onBack={() => {}}
+        partners={fixture}
+      />,
+    )
+    expect(screen.getByText('Проверенные организации в вашем регионе')).toBeInTheDocument()
+  })
+
+  it('без реестра блок организаций не выводится', () => {
+    render(
+      <ResultScreen
+        situation={findSituation('pensioner')!}
+        region={findRegion('moscow')!}
+        onBack={() => {}}
+        onOpenProgram={() => {}}
+      />,
+    )
+    expect(
+      screen.queryByText('Проверенные организации в вашем регионе'),
+    ).not.toBeInTheDocument()
   })
 })

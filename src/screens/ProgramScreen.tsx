@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import qrHome from '../assets/qr-home.svg'
 import type { Program, Region, Situation } from '../data'
+import { partnersForRegion } from '../data/partners'
+import type { PartnerOrg } from '../data/partners'
 import { formatDate } from '../app/dates'
+import { telHref } from '../app/phone'
 
 interface Props {
   program: Program
@@ -9,6 +12,7 @@ interface Props {
   region: Region
   onBack: () => void
   onOpenProgram?: (programId: string) => void
+  partners?: PartnerOrg[]
 }
 
 const READINESS_QUESTIONS = [
@@ -95,12 +99,20 @@ function ReadinessCheck({
   )
 }
 
-export function ProgramScreen({ program, situation, region, onBack, onOpenProgram }: Props) {
+export function ProgramScreen({
+  program,
+  situation,
+  region,
+  onBack,
+  onOpenProgram,
+  partners,
+}: Props) {
   const inHelper = situation.id === 'helper'
   const steps = inHelper ? (program.stepsHelper ?? program.steps) : program.steps
   const sayScript = inHelper
     ? (program.sayScriptHelper ?? program.sayScript)
     : program.sayScript
+  const regionalPartners = partnersForRegion(region.id, partners)
 
   return (
     <>
@@ -160,6 +172,28 @@ export function ProgramScreen({ program, situation, region, onBack, onOpenProgra
           {program.channel === 'store' ? 'Важные ограничения' : 'Сколько ждать'}
         </h2>
         <p>{program.expectations}</p>
+
+        {regionalPartners.length > 0 && (
+          <>
+            <h2 className="sec-h">Проверенные организации в вашем регионе</h2>
+            <ul className="routes-list">
+              {regionalPartners.map((partner) => (
+                <li key={partner.id} className="route-item">
+                  <span className="r-title">{partner.name}</span>
+                  <p className="r-text">{partner.city}</p>
+                  <div className="r-links">
+                    {partner.phone && <a href={telHref(partner.phone)}>{partner.phone}</a>}
+                    {partner.channelUrl && (
+                      <a href={partner.channelUrl} target="_blank" rel="noreferrer">
+                        написать
+                      </a>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
 
         {program.channel === 'direct' && (
           <a

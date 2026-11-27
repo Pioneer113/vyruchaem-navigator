@@ -1,5 +1,7 @@
 import { ROUTES, programsForSituation } from '../data'
 import type { Region, Situation } from '../data'
+import { partnersForRegion } from '../data/partners'
+import type { PartnerOrg } from '../data/partners'
 import { telHref } from '../app/phone'
 
 interface Props {
@@ -7,15 +9,23 @@ interface Props {
   region: Region
   onBack: () => void
   onOpenProgram: (programId: string) => void
+  partners?: PartnerOrg[]
 }
 
-export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props) {
+export function ResultScreen({
+  situation,
+  region,
+  onBack,
+  onOpenProgram,
+  partners,
+}: Props) {
   const programs = programsForSituation(situation.id)
   const isOther = situation.kind === 'other'
   const rusRoute = ROUTES.find((route) => route.id === 'rus')!
   const orderedRoutes = region.foodbankRus
     ? ROUTES
     : [...ROUTES.filter((route) => route.id !== 'rus'), rusRoute]
+  const regionalPartners = partnersForRegion(region.id, partners)
 
   return (
     <section>
@@ -55,6 +65,28 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
             )
           })}
         </ul>
+      )}
+
+      {regionalPartners.length > 0 && (
+        <>
+          <h2 className="sec-h">Проверенные организации в вашем регионе</h2>
+          <ul className="routes-list">
+            {regionalPartners.map((partner) => (
+              <li key={partner.id} className="route-item">
+                <span className="r-title">{partner.name}</span>
+                <p className="r-text">{partner.city}</p>
+                <div className="r-links">
+                  {partner.phone && <a href={telHref(partner.phone)}>{partner.phone}</a>}
+                  {partner.channelUrl && (
+                    <a href={partner.channelUrl} target="_blank" rel="noreferrer">
+                      написать
+                    </a>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
 
       <h2 className="sec-h">Другие маршруты</h2>
