@@ -2,19 +2,23 @@ import { URGENT_NOTE, URGENT_ROUTES } from '../data'
 import type { Region } from '../data'
 
 interface Props {
-  region: Region
-  onBack: () => void
+  region?: Region
+  onBack?: () => void
 }
 
 export function UrgentScreen({ region, onBack }: Props) {
   return (
     <section>
-      <button className="back" type="button" onClick={onBack}>
-        ← Изменить регион
-      </button>
+      {region && onBack && (
+        <button className="back" type="button" onClick={onBack}>
+          ← Изменить регион
+        </button>
+      )}
       <h1>Если еды нет совсем</h1>
       <p className="sub">
-        {region.title}. Это срочная ситуация — вот что можно сделать сегодня.
+        {region
+          ? `${region.title}. Это срочная ситуация — вот что можно сделать сегодня.`
+          : 'Это срочная ситуация — вот что можно сделать сегодня.'}
       </p>
 
       <ul className="cards">
@@ -37,6 +41,9 @@ export function UrgentScreen({ region, onBack }: Props) {
       </ul>
 
       <p className="note">{URGENT_NOTE}</p>
+      <a className="region-link" href="#/situation/urgent">
+        Уточнить помощь в моём регионе
+      </a>
     </section>
   )
 }

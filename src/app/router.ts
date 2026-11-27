@@ -2,6 +2,7 @@ import { findProgram, findRegion, findSituation } from '../data'
 
 export type Route =
   | { name: 'home' }
+  | { name: 'urgent' }
   | { name: 'region'; situationId: string }
   | { name: 'result'; situationId: string; regionId: string }
   | { name: 'program'; situationId: string; regionId: string; programId: string }
@@ -9,6 +10,7 @@ export type Route =
 export function parseRoute(hash: string): Route {
   const clean = hash.replace(/^#\/?/, '')
   if (!clean) return { name: 'home' }
+  if (clean === 'urgent') return { name: 'urgent' }
 
   const parts = clean.split('/')
 
@@ -45,6 +47,7 @@ export function parseRoute(hash: string): Route {
 
 export const hashFor = {
   home: () => '#/',
+  urgent: () => '#/urgent',
   situation: (situationId: string) => `#/situation/${situationId}`,
   result: (situationId: string, regionId: string) =>
     `#/result/${situationId}/${regionId}`,

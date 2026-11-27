@@ -35,16 +35,26 @@ describe('приложение', () => {
     expect(within(scope).getByText(/Проверено 26\.11\.2026/)).toBeInTheDocument()
   })
 
-  it('для срочной ситуации показывает маршруты «сегодня»', async () => {
+  it('для срочной ситуации сразу показывает маршруты «сегодня»', async () => {
     const user = userEvent.setup()
     render(<App />)
 
     await user.click(screen.getByRole('button', { name: 'Мне нечего есть прямо сейчас' }))
-    await user.click(await screen.findByRole('button', { name: /Москва/ }))
 
     expect(await screen.findByText('Если еды нет совсем')).toBeInTheDocument()
     expect(screen.getByText('112')).toBeInTheDocument()
     expect(screen.getByText(/не выдаёт еду в день обращения/)).toBeInTheDocument()
+    expect(screen.getByText('Уточнить помощь в моём регионе')).toBeInTheDocument()
+    expect(window.location.hash).toBe('#/urgent')
+  })
+
+  it('глубокая ссылка #/result/urgent/moscow продолжает работать', async () => {
+    window.location.hash = '#/result/urgent/moscow'
+    render(<App />)
+
+    expect(await screen.findByText('Если еды нет совсем')).toBeInTheDocument()
+    expect(screen.getByText(/Москва\./)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '← Изменить регион' })).toBeInTheDocument()
   })
 
   it('показывает другие маршруты под карточками программ', async () => {

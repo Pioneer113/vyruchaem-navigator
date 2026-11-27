@@ -312,6 +312,16 @@ h1 {
   line-height: 1.5;
 }
 
+.region-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* Карточка программы */
 .sec-h {
   font-size: 20px;

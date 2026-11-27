@@ -52,8 +52,16 @@ export default function App() {
       </header>
 
       {route.name === 'home' && (
-        <SituationScreen onPick={(situationId) => navigate(hashFor.situation(situationId))} />
+        <SituationScreen
+          onPick={(situationId) =>
+            navigate(
+              situationId === 'urgent' ? hashFor.urgent() : hashFor.situation(situationId),
+            )
+          }
+        />
       )}
+
+      {route.name === 'urgent' && <UrgentScreen />}
 
       {route.name === 'region' && situation && (
         <RegionScreen
