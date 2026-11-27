@@ -39,7 +39,7 @@ describe('приложение', () => {
     const printButton = await screen.findByRole('button', { name: 'Распечатать памятку' })
     const scope = printButton.closest('.screen') as HTMLElement
     expect(within(scope).getByText('Как получить')).toBeInTheDocument()
-    expect(within(scope).getByText(/Проверено 26\.11\.2026/)).toBeInTheDocument()
+    expect(within(scope).getByText(/Проверено \d{2}\.\d{2}\.\d{4}/)).toBeInTheDocument()
   })
 
   it('для срочной ситуации сразу показывает маршруты «сегодня»', async () => {
@@ -114,7 +114,8 @@ describe('приложение', () => {
 
     await user.click(screen.getByRole('button', { name: 'Я пожилой человек, живу одиноко' }))
     await user.click(await screen.findByRole('button', { name: /Москва/ }))
-    await user.click(screen.getAllByRole('button', { name: 'Подробнее' })[0])
+    const card = screen.getByText('Выручаем каждый день').closest('.program-card') as HTMLElement
+    await user.click(within(card).getByRole('button', { name: 'Подробнее' }))
     await user.click(await screen.findByRole('button', { name: 'Распечатать памятку' }))
 
     expect(printSpy).toHaveBeenCalledTimes(1)
@@ -266,5 +267,30 @@ describe('приложение', () => {
       'href',
       'https://redcross.ru/contacts/regionalnye-otdeleniya/',
     )
+  })
+
+  it('пенсионеру показывается ежедневная скидка 10%', () => {
+    window.location.hash = '#/result/pensioner/moscow'
+    render(<App />)
+
+    expect(screen.getByText('Скидка 10% для пенсионеров')).toBeInTheDocument()
+    expect(
+      screen.getByText('Действует каждый день (нужен документ и карта)'),
+    ).toBeInTheDocument()
+  })
+
+  it('на экране скидки нет кнопки заявки, есть «Важные ограничения»', () => {
+    window.location.hash = '#/program/pensioner/moscow/senior-discount'
+    render(<App />)
+
+    const screenEl = screen
+      .getByRole('button', { name: 'Распечатать памятку' })
+      .closest('.screen') as HTMLElement
+    expect(
+      screen.queryByText('Открыть заявку на елкажеланий.рф'),
+    ).not.toBeInTheDocument()
+    expect(within(screenEl).getByText(/Проверено 27\.11\.2026/)).toBeInTheDocument()
+    expect(within(screenEl).getByText('Важные ограничения')).toBeInTheDocument()
+    expect(screen.queryByText('Сколько ждать')).not.toBeInTheDocument()
   })
 })

@@ -7,7 +7,7 @@ export interface Situation {
   kind: SituationKind
 }
 
-export type ProgramChannel = 'direct' | 'partner'
+export type ProgramChannel = 'direct' | 'partner' | 'store'
 export type ProgramGeography = 'all' | 'events' | 'regions'
 export type ProgramStatus = 'active' | 'until' | 'ended'
 
@@ -271,13 +271,40 @@ export const PROGRAMS: Program[] = [
     sourceName: 'праздникнастол.рф и елкажеланий.рф',
     verifiedAt: '2026-11-26',
   },
+  {
+    id: 'senior-discount',
+    title: 'Скидка 10% для пенсионеров',
+    benefit: 'Скидка 10% на продукты в «Пятёрочке» и «Перекрёстке»',
+    benefitNote:
+      'В «Пятёрочке» — ежедневно с открытия до 15:00 при оплате по карте «Х5 Клуба». В «Перекрёстке» — в будние дни с открытия до 13:00 (в некоторых магазинах — с 9:00).',
+    audienceNote: 'Пенсионеры',
+    channel: 'store',
+    geography: 'all',
+    status: 'active',
+    statusNote: 'Действует каждый день (нужен документ и карта)',
+    steps: [
+      'Приходите в «Пятёрочку» (ежедневно до 15:00) или в «Перекрёсток» (по будням до 13:00)',
+      'На кассе предъявите пенсионное удостоверение или справку из СФР и активированную карту «Х5 Клуба»',
+      'Скидка применится на кассе; на кассе самообслуживания статус пенсионера можно подтвердить через Цифровой ID в мессенджере MAX',
+    ],
+    documents: [
+      'Пенсионное удостоверение или справка о назначении пенсии из СФР',
+      'Активированная карта «Х5 Клуба»',
+    ],
+    expectations:
+      'Скидка не суммируется с другими акциями и не действует на акционные товары, «Красную цену», социально значимые товары, уценку, табак и алкоголь. Часы скидки в вашем магазине уточните на инфостенде.',
+    sourceUrl:
+      'https://www.x5.ru/ru/news/x5-pervoj-sredi-ritejlerov-zapustila-podtverzhdenie-statusa-pensionera-cherez-messendzher-max-na-kassah-samoobsluzhivaniya/',
+    sourceName: 'x5.ru',
+    verifiedAt: '2026-11-27',
+  },
 ]
 
 export const SITUATIONS: Situation[] = [
   {
     id: 'pensioner',
     title: 'Я пожилой человек, живу одиноко',
-    programs: ['ezhden', 'korzina', 'foodshare'],
+    programs: ['senior-discount', 'ezhden', 'korzina', 'foodshare'],
     kind: 'normal',
   },
   {
@@ -307,7 +334,7 @@ export const SITUATIONS: Situation[] = [
   {
     id: 'helper',
     title: 'Я помогаю другому человеку',
-    programs: ['prazdnik', 'korzina', 'ezhden'],
+    programs: ['prazdnik', 'korzina', 'ezhden', 'senior-discount'],
     kind: 'normal',
   },
   {

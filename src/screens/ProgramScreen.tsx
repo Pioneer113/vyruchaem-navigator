@@ -70,7 +70,9 @@ export function ProgramScreen({ program, situation, region, onBack }: Props) {
           </>
         )}
 
-        <h2 className="sec-h">Сколько ждать</h2>
+        <h2 className="sec-h">
+          {program.channel === 'store' ? 'Важные ограничения' : 'Сколько ждать'}
+        </h2>
         <p>{program.expectations}</p>
 
         {program.channel === 'direct' && (

@@ -30,7 +30,7 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
       </p>
 
       {programs.length > 0 && (
-        <ul className="cards">
+        <ul className={programs.length === 4 ? 'cards cards--4' : 'cards'}>
           {programs.map((program) => {
             const chipText =
               program.id === 'foodshare'

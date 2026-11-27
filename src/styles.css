@@ -272,6 +272,10 @@ h1 {
     grid-template-columns: repeat(3, 1fr);
     align-items: stretch;
   }
+
+  .cards--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .program-card,

@@ -34,7 +34,7 @@ describe('данные навигатора', () => {
       expect(program.sourceUrl).toMatch(/^https:\/\//)
       expect(program.sourceName).toBeTruthy()
       expect(program.verifiedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/)
-      expect(['direct', 'partner']).toContain(program.channel)
+      expect(['direct', 'partner', 'store']).toContain(program.channel)
       expect(['active', 'until', 'ended']).toContain(program.status)
     }
   })
@@ -143,9 +143,23 @@ describe('данные навигатора', () => {
   })
 
   it('programsForSituation возвращает программы в порядке приоритета', () => {
-    expect(programsForSituation('pensioner').map((p) => p.id)[0]).toBe('ezhden')
+    expect(programsForSituation('pensioner').map((p) => p.id)[0]).toBe('senior-discount')
     expect(programsForSituation('family').map((p) => p.id)[0]).toBe('prazdnik')
     expect(programsForSituation('unknown')).toEqual([])
+  })
+
+  it('скидка 10% для пенсионеров: часы, документы и честные ограничения', () => {
+    const program = findProgram('senior-discount')!
+    expect(program.channel).toBe('store')
+    expect(program.statusNote).toBe('Действует каждый день (нужен документ и карта)')
+    const steps = program.steps.join(' ')
+    expect(steps).toContain('15:00')
+    expect(steps).toContain('по будням до 13:00')
+    expect(steps).toContain('MAX')
+    expect(program.documents.join(' ')).toContain('Х5 Клуба')
+    expect(program.expectations).toContain('Красную цену')
+    expect(program.expectations).toContain('табак')
+    expect(program.verifiedAt).toBe('2026-11-27')
   })
 
   it('у «Выручаем каждый день» есть шаги и скрипт для помощника', () => {
