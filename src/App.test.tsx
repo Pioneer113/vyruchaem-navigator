@@ -206,4 +206,15 @@ describe('приложение', () => {
     expect(screen.queryByText(/Ваш регион:/)).not.toBeInTheDocument()
     expect(screen.getByText('Где вы живёте?')).toBeInTheDocument()
   })
+
+  it('сценарий помощника: формулировки от лица помогающего', () => {
+    window.location.hash = '#/program/helper/moscow/ezhden'
+    render(<App />)
+
+    expect(screen.queryByText(/Живу одиноко/)).not.toBeInTheDocument()
+    expect(screen.getByText(/помогаю одинокому пожилому/)).toBeInTheDocument()
+    const memo = screen.getByTestId('print-memo')
+    expect(within(memo).getByText(/Расскажите о ситуации подопечного/)).toBeInTheDocument()
+    expect(within(memo).queryByText(/живёте одиноко/)).not.toBeInTheDocument()
+  })
 })
