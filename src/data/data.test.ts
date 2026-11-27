@@ -60,6 +60,7 @@ describe('данные навигатора', () => {
     expect(program.documents.join(' ')).not.toContain('малоимуществе')
     expect(program.documents.join(' ')).not.toContain('Удостоверение многодетности')
     expect(program.steps.join(' ')).toContain('открывающейся после заполнения заявки')
+    expect(program.steps[1]).toContain('бумажная')
   })
 
   it('«Корзина доброты» честно говорит: наборы развозят по спискам, прийти нельзя', () => {

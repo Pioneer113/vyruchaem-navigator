@@ -16,9 +16,10 @@ describe('приложение', () => {
     expect(screen.getByRole('button', { name: 'Мне нечего есть прямо сейчас' })).toBeInTheDocument()
   })
 
-  it('футер доступен по стабильному селектору и без инлайн-стилей', () => {
+  it('футер доступен по стабильному селектору и содержит дисклеймер', () => {
     render(<App />)
     const footer = screen.getByTestId('footer-note')
+    expect(footer).toHaveTextContent('Не фонд: заявки и деньги не принимаем')
     expect(footer).not.toHaveAttribute('style')
   })
 
