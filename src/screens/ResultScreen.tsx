@@ -26,21 +26,29 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
 
       {programs.length > 0 && (
         <ul className="cards">
-          {programs.map((program) => (
-            <li key={program.id} className="program-card">
-              <h2 className="pc-title">{program.title}</h2>
-              <p className="pc-benefit">{program.benefit}</p>
-              <p className="pc-meta">{program.audienceNote}</p>
-              <span className="chip">{program.statusNote}</span>
-              <button
-                className="more-btn"
-                type="button"
-                onClick={() => onOpenProgram(program.id)}
-              >
-                Подробнее
-              </button>
-            </li>
-          ))}
+          {programs.map((program) => {
+            const chipText =
+              program.id === 'foodshare'
+                ? region.foodshare
+                  ? 'Фудшеринг работает в вашем регионе'
+                  : 'В вашем регионе не подтверждён'
+                : program.statusNote
+            return (
+              <li key={program.id} className="program-card">
+                <h2 className="pc-title">{program.title}</h2>
+                <p className="pc-benefit">{program.benefit}</p>
+                <p className="pc-meta">{program.audienceNote}</p>
+                <span className="chip">{chipText}</span>
+                <button
+                  className="more-btn"
+                  type="button"
+                  onClick={() => onOpenProgram(program.id)}
+                >
+                  Подробнее
+                </button>
+              </li>
+            )
+          })}
         </ul>
       )}
 

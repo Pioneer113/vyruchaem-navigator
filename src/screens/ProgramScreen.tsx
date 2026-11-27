@@ -33,6 +33,11 @@ export function ProgramScreen({ program, situation, region, onBack }: Props) {
         <h2 className="sec-h">Кому подходит</h2>
         <p>{program.audienceNote}</p>
         {program.geographyNote && <p className="small">{program.geographyNote}</p>}
+        {program.id === 'foodshare' && (
+          <p className="small">
+            В вашем регионе: {region.foodshare ? 'подтверждено' : 'не подтверждено'}.
+          </p>
+        )}
 
         <h2 className="sec-h">Как получить</h2>
         <ol className="steps-list">

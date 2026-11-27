@@ -98,6 +98,23 @@ describe('данные навигатора', () => {
     expect(text).toMatch(/в семье не хватает/)
   })
 
+  it('фудшеринг отмечен ровно в 9 регионах', () => {
+    const ids = REGIONS.filter((region) => region.foodshare)
+      .map((region) => region.id)
+      .sort()
+    expect(ids).toEqual([
+      'chelyabinsk',
+      'krasnodar',
+      'moscow',
+      'murmansk',
+      'rostov',
+      'ryazan',
+      'spb',
+      'sverdlovsk',
+      'tomsk',
+    ])
+  })
+
   it('список регионов — 85 субъектов, Москва и Петербург первыми', () => {
     expect(REGIONS).toHaveLength(85)
     expect(REGIONS[0].id).toBe('moscow')

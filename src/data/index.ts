@@ -37,6 +37,7 @@ export interface Region {
   id: string
   title: string
   popular?: boolean
+  foodshare?: boolean
 }
 
 export interface UrgentRoute {
@@ -292,8 +293,8 @@ export const SITUATIONS: Situation[] = [
 ]
 
 export const REGIONS: Region[] = [
-  { id: 'moscow', title: 'Москва', popular: true },
-  { id: 'spb', title: 'Санкт-Петербург', popular: true },
+  { id: 'moscow', title: 'Москва', popular: true, foodshare: true },
+  { id: 'spb', title: 'Санкт-Петербург', popular: true, foodshare: true },
   { id: 'adygea', title: 'Республика Адыгея' },
   { id: 'altai-republic', title: 'Республика Алтай' },
   { id: 'bashkortostan', title: 'Республика Башкортостан' },
@@ -319,7 +320,7 @@ export const REGIONS: Region[] = [
   { id: 'altai-krai', title: 'Алтайский край' },
   { id: 'zabaykalsky', title: 'Забайкальский край' },
   { id: 'kamchatka', title: 'Камчатский край' },
-  { id: 'krasnodar', title: 'Краснодарский край' },
+  { id: 'krasnodar', title: 'Краснодарский край', foodshare: true },
   { id: 'krasnoyarsk', title: 'Красноярский край' },
   { id: 'perm', title: 'Пермский край' },
   { id: 'primorsky', title: 'Приморский край' },
@@ -347,7 +348,7 @@ export const REGIONS: Region[] = [
   { id: 'lipetsk', title: 'Липецкая область' },
   { id: 'magadan', title: 'Магаданская область' },
   { id: 'moscow-oblast', title: 'Московская область' },
-  { id: 'murmansk', title: 'Мурманская область' },
+  { id: 'murmansk', title: 'Мурманская область', foodshare: true },
   { id: 'nizhny-novgorod', title: 'Нижегородская область' },
   { id: 'novgorod', title: 'Новгородская область' },
   { id: 'novosibirsk', title: 'Новосибирская область' },
@@ -356,20 +357,20 @@ export const REGIONS: Region[] = [
   { id: 'oryol', title: 'Орловская область' },
   { id: 'penza', title: 'Пензенская область' },
   { id: 'pskov', title: 'Псковская область' },
-  { id: 'rostov', title: 'Ростовская область' },
-  { id: 'ryazan', title: 'Рязанская область' },
+  { id: 'rostov', title: 'Ростовская область', foodshare: true },
+  { id: 'ryazan', title: 'Рязанская область', foodshare: true },
   { id: 'samara', title: 'Самарская область' },
   { id: 'saratov', title: 'Саратовская область' },
   { id: 'sakhalin', title: 'Сахалинская область' },
-  { id: 'sverdlovsk', title: 'Свердловская область' },
+  { id: 'sverdlovsk', title: 'Свердловская область', foodshare: true },
   { id: 'smolensk', title: 'Смоленская область' },
   { id: 'tambov', title: 'Тамбовская область' },
   { id: 'tver', title: 'Тверская область' },
-  { id: 'tomsk', title: 'Томская область' },
+  { id: 'tomsk', title: 'Томская область', foodshare: true },
   { id: 'tula', title: 'Тульская область' },
   { id: 'tyumen', title: 'Тюменская область' },
   { id: 'ulyanovsk', title: 'Ульяновская область' },
-  { id: 'chelyabinsk', title: 'Челябинская область' },
+  { id: 'chelyabinsk', title: 'Челябинская область', foodshare: true },
   { id: 'yaroslavl', title: 'Ярославская область' },
   { id: 'sevastopol', title: 'Севастополь' },
   { id: 'jewish', title: 'Еврейская автономная область' },

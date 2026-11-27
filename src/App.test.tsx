@@ -117,6 +117,20 @@ describe('приложение', () => {
     printSpy.mockRestore()
   })
 
+  it('фудшеринг учитывает регион: Москву подтверждает', async () => {
+    window.location.hash = '#/result/pensioner/moscow'
+    render(<App />)
+
+    expect(await screen.findByText('Фудшеринг работает в вашем регионе')).toBeInTheDocument()
+  })
+
+  it('фудшеринг честно говорит, если регион не подтверждён', async () => {
+    window.location.hash = '#/result/pensioner/tatarstan'
+    render(<App />)
+
+    expect(await screen.findByText('В вашем регионе не подтверждён')).toBeInTheDocument()
+  })
+
   it('не дублирует дисклеймеры на экране «другая ситуация»', async () => {
     const user = userEvent.setup()
     render(<App />)
