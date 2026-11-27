@@ -43,6 +43,12 @@ function ReadinessCheck({
   const [answers, setAnswers] = useState<(boolean | null)[]>([null, null, null])
   const allAnswered = answers.every((answer) => answer !== null)
   const firstNo = answers.findIndex((answer) => answer === false)
+  const verdict =
+    firstNo !== -1
+      ? READINESS_QUESTIONS[firstNo].reason
+      : allAnswered
+        ? 'По основным критериям подходите — можно заполнять заявку на елкажеланий.рф'
+        : ''
 
   const setAnswer = (index: number, value: boolean) => {
     setAnswers((prev) => prev.map((answer, i) => (i === index ? value : answer)))
@@ -77,14 +83,17 @@ function ReadinessCheck({
           </div>
         </div>
       ))}
+      <p className="sr-only" role="status">
+        {verdict}
+      </p>
       {allAnswered && firstNo === -1 && (
-        <p className="check-ok" role="status">
+        <p className="check-ok">
           По основным критериям подходите — можно заполнять заявку на елкажеланий.рф
         </p>
       )}
       {firstNo !== -1 && (
         <div className="check-no">
-          <p role="status">{READINESS_QUESTIONS[firstNo].reason}</p>
+          <p>{READINESS_QUESTIONS[firstNo].reason}</p>
           <div className="check-alts">
             <button
               type="button"
