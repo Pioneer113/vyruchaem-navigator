@@ -124,6 +124,12 @@ export function ProgramScreen({ program, situation, region, onBack }: Props) {
           ))}
         </ul>
         {program.documentsNote && <p className="pm-note">{program.documentsNote}</p>}
+        {sayScript && (
+          <>
+            <h2 className="pm-h">Что сказать</h2>
+            <p className="pm-say">{sayScript}</p>
+          </>
+        )}
         <div className="pm-foot">
           <img
             className="pm-qr"

@@ -545,11 +545,11 @@ h1 {
 }
 
 html[data-font='large'] {
-  font-size: 20.7px;
+  font-size: 129.375%;
 }
 
 html[data-font='xlarge'] {
-  font-size: 23.4px;
+  font-size: 146.25%;
 }
 
 .sub + .chip {
@@ -643,6 +643,13 @@ html[data-font='xlarge'] {
   font-size: 9pt;
   color: var(--ink-soft);
   margin-bottom: 4px;
+}
+
+.pm-say {
+  font-size: 10pt;
+  margin-bottom: 10px;
+  border-left: 2px solid var(--line);
+  padding-left: 8px;
 }
 
 @media print {

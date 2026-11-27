@@ -212,9 +212,21 @@ describe('приложение', () => {
     render(<App />)
 
     expect(screen.queryByText(/Живу одиноко/)).not.toBeInTheDocument()
-    expect(screen.getByText(/помогаю одинокому пожилому/)).toBeInTheDocument()
+    const screenEl = screen
+      .getByRole('button', { name: 'Распечатать памятку' })
+      .closest('.screen') as HTMLElement
+    expect(within(screenEl).getByText(/помогаю одинокому пожилому/)).toBeInTheDocument()
     const memo = screen.getByTestId('print-memo')
     expect(within(memo).getByText(/Расскажите о ситуации подопечного/)).toBeInTheDocument()
     expect(within(memo).queryByText(/живёте одиноко/)).not.toBeInTheDocument()
+  })
+
+  it('памятка помощника содержит скрипт «что сказать»', () => {
+    window.location.hash = '#/program/helper/moscow/ezhden'
+    render(<App />)
+
+    const memo = screen.getByTestId('print-memo')
+    expect(within(memo).getByText('Что сказать')).toBeInTheDocument()
+    expect(within(memo).getByText(/помогаю одинокому пожилому/)).toBeInTheDocument()
   })
 })
