@@ -185,4 +185,25 @@ describe('приложение', () => {
     const memo = screen.getByTestId('print-memo')
     expect(within(memo).getByText(/В вашем регионе: не подтверждено/)).toBeInTheDocument()
   })
+
+  it('быстрый выбор сохранённого региона ведёт к результату', async () => {
+    const user = userEvent.setup()
+    localStorage.setItem('vyruchaem.region', 'moscow')
+    window.location.hash = '#/situation/pensioner'
+    render(<App />)
+
+    await user.click(
+      screen.getByRole('button', { name: 'Ваш регион: Москва — продолжить' }),
+    )
+    expect(await screen.findByText('Вам может подойти')).toBeInTheDocument()
+  })
+
+  it('мусор в сохранённом регионе не показывает быстрый выбор', () => {
+    localStorage.setItem('vyruchaem.region', 'nope')
+    window.location.hash = '#/situation/pensioner'
+    render(<App />)
+
+    expect(screen.queryByText(/Ваш регион:/)).not.toBeInTheDocument()
+    expect(screen.getByText('Где вы живёте?')).toBeInTheDocument()
+  })
 })

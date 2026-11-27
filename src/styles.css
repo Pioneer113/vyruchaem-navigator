@@ -152,6 +152,24 @@ h1 {
   background: #1e4636;
 }
 
+.saved-region {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.saved-region:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
 @media (max-width: 359px) {
   .popular {
     grid-template-columns: 1fr;
