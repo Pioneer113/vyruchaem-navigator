@@ -103,7 +103,7 @@ export default function App() {
         />
       )}
 
-      <footer className="foot">
+      <footer className="foot" data-testid="footer-note">
         Информационный сайт. Не фонд: заявки и деньги не принимаем. Данные — из открытых
         источников, актуальность проверяйте у фонда.
       </footer>
