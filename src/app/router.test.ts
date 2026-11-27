@@ -50,6 +50,12 @@ describe('маршруты', () => {
     expect(parseRoute('#/urgent')).toEqual({ name: 'urgent' })
   })
 
+  it('сертификат открывается без выбора региона', () => {
+    expect(parseRoute('#/certificate')).toEqual({ name: 'certificate' })
+    expect(parseRoute('#/situation/certificate')).toEqual({ name: 'certificate' })
+    expect(parseRoute('#/result/certificate/moscow')).toEqual({ name: 'certificate' })
+  })
+
   it('hashFor собирает адреса', () => {
     expect(hashFor.result('pensioner', 'moscow')).toBe('#/result/pensioner/moscow')
     expect(hashFor.situation('family')).toBe('#/situation/family')
@@ -57,5 +63,6 @@ describe('маршруты', () => {
       '#/program/pensioner/moscow/ezhden',
     )
     expect(hashFor.urgent()).toBe('#/urgent')
+    expect(hashFor.certificate()).toBe('#/certificate')
   })
 })

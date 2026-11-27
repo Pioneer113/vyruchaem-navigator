@@ -11,10 +11,13 @@ import {
 } from './index'
 
 describe('данные навигатора', () => {
-  it('шесть ситуаций и вариант «другая»', () => {
-    expect(SITUATIONS).toHaveLength(7)
-    expect(new Set(SITUATIONS.map((s) => s.id)).size).toBe(7)
+  it('семь ситуаций, вариант «другая» и сертификат', () => {
+    expect(SITUATIONS).toHaveLength(8)
+    expect(new Set(SITUATIONS.map((s) => s.id)).size).toBe(8)
     expect(SITUATIONS.filter((s) => s.kind === 'other')).toHaveLength(1)
+    const certificate = SITUATIONS.find((s) => s.id === 'certificate')!
+    expect(certificate.kind).toBe('certificate')
+    expect(certificate.programs).toEqual([])
   })
 
   it('все программы из ситуаций существуют', () => {
@@ -34,7 +37,7 @@ describe('данные навигатора', () => {
       expect(program.sourceUrl).toMatch(/^https:\/\//)
       expect(program.sourceName).toBeTruthy()
       expect(program.verifiedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/)
-      expect(['direct', 'partner']).toContain(program.channel)
+      expect(['direct', 'partner', 'store']).toContain(program.channel)
       expect(['active', 'until', 'ended']).toContain(program.status)
     }
   })
@@ -143,9 +146,23 @@ describe('данные навигатора', () => {
   })
 
   it('programsForSituation возвращает программы в порядке приоритета', () => {
-    expect(programsForSituation('pensioner').map((p) => p.id)[0]).toBe('ezhden')
+    expect(programsForSituation('pensioner').map((p) => p.id)[0]).toBe('senior-discount')
     expect(programsForSituation('family').map((p) => p.id)[0]).toBe('prazdnik')
     expect(programsForSituation('unknown')).toEqual([])
+  })
+
+  it('скидка 10% для пенсионеров: часы, документы и честные ограничения', () => {
+    const program = findProgram('senior-discount')!
+    expect(program.channel).toBe('store')
+    expect(program.statusNote).toBe('Действует каждый день (нужен документ и карта)')
+    const steps = program.steps.join(' ')
+    expect(steps).toContain('15:00')
+    expect(steps).toContain('по будням до 13:00')
+    expect(steps).toContain('MAX')
+    expect(program.documents.join(' ')).toContain('Х5 Клуба')
+    expect(program.expectations).toContain('Красную цену')
+    expect(program.expectations).toContain('табак')
+    expect(program.verifiedAt).toBe('2026-11-27')
   })
 
   it('у «Выручаем каждый день» есть шаги и скрипт для помощника', () => {
@@ -159,5 +176,47 @@ describe('данные навигатора', () => {
   it('скрипт помощника «Корзины» и шаги помощника «Праздника» от лица помогающего', () => {
     expect(findProgram('korzina')!.sayScriptHelper).toContain('человеку в трудной')
     expect(findProgram('prazdnik')!.stepsHelper![0]).toContain('родитель или законный представитель')
+  })
+
+  it('«Банк еды „Русь“» — ровно 17 регионов с флагом', () => {
+    const ids = REGIONS.filter((region) => region.foodbankRus)
+      .map((region) => region.id)
+      .sort()
+    expect(ids).toEqual([
+      'bashkortostan',
+      'chelyabinsk',
+      'kostroma',
+      'krasnodar',
+      'leningrad',
+      'lipetsk',
+      'moscow-oblast',
+      'novgorod',
+      'pskov',
+      'rostov',
+      'ryazan',
+      'sverdlovsk',
+      'tula',
+      'udmurtia',
+      'vladimir',
+      'vologda',
+      'voronezh',
+    ])
+  })
+
+  it('контакты отделений РКК — 20 регионов, включая Тулу и Татарстан', () => {
+    expect(REGIONS.filter((region) => region.redcrossContact)).toHaveLength(20)
+    expect(REGIONS.find((region) => region.id === 'tula')!.redcrossContact!.phone).toBe(
+      '8 (487) 250-51-36',
+    )
+    expect(REGIONS.find((region) => region.id === 'tatarstan')!.redcrossContact!.phone).toBe(
+      '8 (992) 072-02-05',
+    )
+  })
+
+  it('у РКК в обоих списках маршрутов есть каталог отделений', () => {
+    const fromRoutes = ROUTES.find((route) => route.id === 'rkk')!
+    const fromUrgent = URGENT_ROUTES.find((route) => route.id === 'rkk')!
+    expect(fromRoutes.url2).toContain('regionalnye-otdeleniya')
+    expect(fromUrgent.url2).toContain('regionalnye-otdeleniya')
   })
 })

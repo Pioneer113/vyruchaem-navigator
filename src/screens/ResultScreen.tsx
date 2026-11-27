@@ -1,5 +1,7 @@
 import { ROUTES, programsForSituation } from '../data'
 import type { Region, Situation } from '../data'
+import { partnersForRegion } from '../data/partners'
+import type { PartnerOrg } from '../data/partners'
 import { telHref } from '../app/phone'
 
 interface Props {
@@ -7,11 +9,23 @@ interface Props {
   region: Region
   onBack: () => void
   onOpenProgram: (programId: string) => void
+  partners?: PartnerOrg[]
 }
 
-export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props) {
+export function ResultScreen({
+  situation,
+  region,
+  onBack,
+  onOpenProgram,
+  partners,
+}: Props) {
   const programs = programsForSituation(situation.id)
   const isOther = situation.kind === 'other'
+  const rusRoute = ROUTES.find((route) => route.id === 'rus')!
+  const orderedRoutes = region.foodbankRus
+    ? ROUTES
+    : [...ROUTES.filter((route) => route.id !== 'rus'), rusRoute]
+  const regionalPartners = partnersForRegion(region.id, partners)
 
   return (
     <section>
@@ -26,7 +40,7 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
       </p>
 
       {programs.length > 0 && (
-        <ul className="cards">
+        <ul className={programs.length === 4 ? 'cards cards--4' : 'cards'}>
           {programs.map((program) => {
             const chipText =
               program.id === 'foodshare'
@@ -53,6 +67,28 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
         </ul>
       )}
 
+      {regionalPartners.length > 0 && (
+        <>
+          <h2 className="sec-h">Проверенные организации в вашем регионе</h2>
+          <ul className="routes-list">
+            {regionalPartners.map((partner) => (
+              <li key={partner.id} className="route-item">
+                <span className="r-title">{partner.name}</span>
+                <p className="r-text">{partner.city}</p>
+                <div className="r-links">
+                  {partner.phone && <a href={telHref(partner.phone)}>{partner.phone}</a>}
+                  {partner.channelUrl && (
+                    <a href={partner.channelUrl} target="_blank" rel="noreferrer">
+                      написать
+                    </a>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
       <h2 className="sec-h">Другие маршруты</h2>
       {!isOther && (
         <p className="small">
@@ -60,10 +96,33 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
         </p>
       )}
       <ul className="routes-list">
-        {ROUTES.map((route) => (
+        {orderedRoutes.map((route) => (
           <li key={route.id} className="route-item">
             <span className="r-title">{route.title}</span>
             <p className="r-text">{route.text}</p>
+            {route.id === 'rus' && (
+              <p className="small">
+                {region.foodbankRus
+                  ? 'В вашем регионе есть банк еды «Русь».'
+                  : 'В вашем регионе нет отделения банка еды «Русь».'}
+              </p>
+            )}
+            {route.id === 'rkk' && region.redcrossContact && (
+              <p className="small contact-line">
+                Отделение в вашем регионе:{' '}
+                {region.redcrossContact.phone && (
+                  <a href={telHref(region.redcrossContact.phone)}>
+                    {region.redcrossContact.phone}
+                  </a>
+                )}
+                {region.redcrossContact.phone && region.redcrossContact.url && ' · '}
+                {region.redcrossContact.url && (
+                  <a href={region.redcrossContact.url} target="_blank" rel="noreferrer">
+                    сайт отделения
+                  </a>
+                )}
+              </p>
+            )}
             <div className="r-links">
               {route.phone && (
                 <a href={telHref(route.phone)}>{route.phone}</a>
@@ -71,6 +130,11 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
               {route.url && (
                 <a href={route.url} target="_blank" rel="noreferrer">
                   {route.urlLabel ?? route.url}
+                </a>
+              )}
+              {route.url2 && (
+                <a href={route.url2} target="_blank" rel="noreferrer">
+                  {route.url2Label ?? route.url2}
                 </a>
               )}
             </div>

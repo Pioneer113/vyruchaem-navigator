@@ -10,6 +10,7 @@ import {
   saveFontScale,
 } from './app/fontScale'
 import { findProgram, findRegion, findSituation } from './data'
+import { CertificateScreen } from './screens/CertificateScreen'
 import { ProgramScreen } from './screens/ProgramScreen'
 import { RegionScreen } from './screens/RegionScreen'
 import { ResultScreen } from './screens/ResultScreen'
@@ -53,15 +54,23 @@ export default function App() {
 
       {route.name === 'home' && (
         <SituationScreen
-          onPick={(situationId) =>
-            navigate(
-              situationId === 'urgent' ? hashFor.urgent() : hashFor.situation(situationId),
-            )
-          }
+          onPick={(situationId) => {
+            if (situationId === 'urgent') {
+              navigate(hashFor.urgent())
+            } else if (situationId === 'certificate') {
+              navigate(hashFor.certificate())
+            } else {
+              navigate(hashFor.situation(situationId))
+            }
+          }}
         />
       )}
 
       {route.name === 'urgent' && <UrgentScreen onBack={() => navigate(hashFor.home())} />}
+
+      {route.name === 'certificate' && (
+        <CertificateScreen onBack={() => navigate(hashFor.home())} />
+      )}
 
       {route.name === 'region' && situation && (
         <RegionScreen
@@ -100,6 +109,9 @@ export default function App() {
           situation={situation}
           region={findRegion(route.regionId)!}
           onBack={() => navigate(hashFor.result(route.situationId, route.regionId))}
+          onOpenProgram={(programId) =>
+            navigate(hashFor.program(route.situationId, route.regionId, programId))
+          }
         />
       )}
 

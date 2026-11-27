@@ -8,6 +8,12 @@ interface Props {
 }
 
 export function UrgentScreen({ region, onBack }: Props) {
+  const rusRoute = URGENT_ROUTES.find((route) => route.id === 'rus')!
+  const orderedRoutes =
+    region && !region.foodbankRus
+      ? [...URGENT_ROUTES.filter((route) => route.id !== 'rus'), rusRoute]
+      : URGENT_ROUTES
+
   return (
     <section>
       {onBack && (
@@ -23,10 +29,33 @@ export function UrgentScreen({ region, onBack }: Props) {
       </p>
 
       <ul className="cards">
-        {URGENT_ROUTES.map((route) => (
+        {orderedRoutes.map((route) => (
           <li key={route.id} className="urgent-card">
             <h2 className="pc-title">{route.title}</h2>
             <p className="pc-meta">{route.text}</p>
+            {route.id === 'rus' && region && (
+              <p className="small">
+                {region.foodbankRus
+                  ? 'В вашем регионе есть банк еды «Русь».'
+                  : 'В вашем регионе нет отделения банка еды «Русь».'}
+              </p>
+            )}
+            {route.id === 'rkk' && region?.redcrossContact && (
+              <p className="small contact-line">
+                Отделение в вашем регионе:{' '}
+                {region.redcrossContact.phone && (
+                  <a href={telHref(region.redcrossContact.phone)}>
+                    {region.redcrossContact.phone}
+                  </a>
+                )}
+                {region.redcrossContact.phone && region.redcrossContact.url && ' · '}
+                {region.redcrossContact.url && (
+                  <a href={region.redcrossContact.url} target="_blank" rel="noreferrer">
+                    сайт отделения
+                  </a>
+                )}
+              </p>
+            )}
             {route.phone && (
               <a className="btn-link small-btn" href={telHref(route.phone)}>
                 {route.phone}
@@ -35,6 +64,11 @@ export function UrgentScreen({ region, onBack }: Props) {
             {route.url && (
               <a className="src-link" href={route.url} target="_blank" rel="noreferrer">
                 {route.urlLabel ?? route.url}
+              </a>
+            )}
+            {route.url2 && (
+              <a className="src-link" href={route.url2} target="_blank" rel="noreferrer">
+                {route.url2Label ?? route.url2}
               </a>
             )}
           </li>

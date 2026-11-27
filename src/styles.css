@@ -272,6 +272,10 @@ h1 {
     grid-template-columns: repeat(3, 1fr);
     align-items: stretch;
   }
+
+  .cards--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .program-card,
@@ -351,9 +355,17 @@ h1 {
 .region-link:focus-visible,
 .src a:focus-visible,
 .src-link:focus-visible,
-.r-links a:focus-visible {
+.r-links a:focus-visible,
+.contact-line a:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 2px;
+}
+
+.contact-line a {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* Карточка программы */
@@ -428,6 +440,74 @@ h1 {
   padding: 12px 16px;
   font-size: 0.89rem;
   line-height: 1.5;
+}
+
+.check-row {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 10px;
+}
+
+.check-row p {
+  font-size: 0.89rem;
+  line-height: 1.4;
+}
+
+.check-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.check-btns button {
+  border: 2px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 0.889rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.check-btns button[aria-pressed='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #f6f2e3;
+}
+
+.check-btns button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.check-ok {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #eaf3e2;
+  font-size: 0.89rem;
+  font-weight: 600;
+}
+
+.check-no {
+  margin-top: 12px;
+}
+
+.check-no p {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--urgent);
+  font-size: 0.89rem;
+  line-height: 1.45;
+}
+
+.check-alts {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
 .btn-link {
@@ -657,6 +737,14 @@ html[data-font='xlarge'] {
   .foot,
   .screen {
     display: none !important;
+  }
+
+  .screen--printable {
+    display: block !important;
+  }
+
+  .screen--printable .back {
+    display: none;
   }
 
   .print-memo {

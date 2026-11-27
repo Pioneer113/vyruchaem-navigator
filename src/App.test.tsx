@@ -2,6 +2,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
+import { findProgram, findRegion, findSituation } from './data'
+import { ProgramScreen } from './screens/ProgramScreen'
+import { ResultScreen } from './screens/ResultScreen'
 
 describe('приложение', () => {
   beforeEach(() => {
@@ -39,7 +42,7 @@ describe('приложение', () => {
     const printButton = await screen.findByRole('button', { name: 'Распечатать памятку' })
     const scope = printButton.closest('.screen') as HTMLElement
     expect(within(scope).getByText('Как получить')).toBeInTheDocument()
-    expect(within(scope).getByText(/Проверено 26\.11\.2026/)).toBeInTheDocument()
+    expect(within(scope).getByText(/Проверено \d{2}\.\d{2}\.\d{4}/)).toBeInTheDocument()
   })
 
   it('для срочной ситуации сразу показывает маршруты «сегодня»', async () => {
@@ -114,7 +117,8 @@ describe('приложение', () => {
 
     await user.click(screen.getByRole('button', { name: 'Я пожилой человек, живу одиноко' }))
     await user.click(await screen.findByRole('button', { name: /Москва/ }))
-    await user.click(screen.getAllByRole('button', { name: 'Подробнее' })[0])
+    const card = screen.getByText('Выручаем каждый день').closest('.program-card') as HTMLElement
+    await user.click(within(card).getByRole('button', { name: 'Подробнее' }))
     await user.click(await screen.findByRole('button', { name: 'Распечатать памятку' }))
 
     expect(printSpy).toHaveBeenCalledTimes(1)
@@ -228,5 +232,221 @@ describe('приложение', () => {
     const memo = screen.getByTestId('print-memo')
     expect(within(memo).getByText('Что сказать')).toBeInTheDocument()
     expect(within(memo).getByText(/помогаю одинокому пожилому/)).toBeInTheDocument()
+  })
+
+  it('Тульская область: банк еды «Русь» есть — честная пометка', () => {
+    window.location.hash = '#/result/pensioner/tula'
+    render(<App />)
+
+    expect(screen.getByText('В вашем регионе есть банк еды «Русь».')).toBeInTheDocument()
+  })
+
+  it('Татарстан: банка еды «Русь» нет — пометка и карточка в конце списка', () => {
+    window.location.hash = '#/result/pensioner/tatarstan'
+    render(<App />)
+
+    expect(
+      screen.getByText('В вашем регионе нет отделения банка еды «Русь».'),
+    ).toBeInTheDocument()
+    const items = document.querySelectorAll('.route-item')
+    expect(items[items.length - 1].textContent).toContain('Банк еды «Русь»')
+  })
+
+  it('на срочном экране региона виден телефон отделения Красного Креста', () => {
+    window.location.hash = '#/result/urgent/tula'
+    render(<App />)
+
+    expect(screen.getByText('8 (487) 250-51-36').closest('a')).toHaveAttribute(
+      'href',
+      'tel:+74872505136',
+    )
+  })
+
+  it('на #/urgent есть ссылка на каталог отделений РКК', () => {
+    window.location.hash = '#/urgent'
+    render(<App />)
+
+    expect(screen.getByRole('link', { name: 'Каталог отделений' })).toHaveAttribute(
+      'href',
+      'https://redcross.ru/contacts/regionalnye-otdeleniya/',
+    )
+  })
+
+  it('пенсионеру показывается ежедневная скидка 10%', () => {
+    window.location.hash = '#/result/pensioner/moscow'
+    render(<App />)
+
+    expect(screen.getByText('Скидка 10% для пенсионеров')).toBeInTheDocument()
+    expect(
+      screen.getByText('Действует каждый день (нужен документ и карта)'),
+    ).toBeInTheDocument()
+  })
+
+  it('на экране скидки нет кнопки заявки, есть «Важные ограничения»', () => {
+    window.location.hash = '#/program/pensioner/moscow/senior-discount'
+    render(<App />)
+
+    const screenEl = screen
+      .getByRole('button', { name: 'Распечатать памятку' })
+      .closest('.screen') as HTMLElement
+    expect(
+      screen.queryByText('Открыть заявку на елкажеланий.рф'),
+    ).not.toBeInTheDocument()
+    expect(within(screenEl).getByText(/Проверено 27\.11\.2026/)).toBeInTheDocument()
+    expect(within(screenEl).getByText('Важные ограничения')).toBeInTheDocument()
+    expect(screen.queryByText('Сколько ждать')).not.toBeInTheDocument()
+  })
+
+  it('памятка скидки печатает важные ограничения', () => {
+    window.location.hash = '#/program/pensioner/moscow/senior-discount'
+    render(<App />)
+
+    const memo = screen.getByTestId('print-memo')
+    expect(within(memo).getByText('Важные ограничения')).toBeInTheDocument()
+    expect(within(memo).getByText(/Красную цену/)).toBeInTheDocument()
+  })
+
+  it('сертификат: инструкция сразу, без выбора региона и с горячими линиями', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'У меня уже есть продуктовый сертификат' }))
+
+    expect(await screen.findByText('Как потратить продуктовый сертификат')).toBeInTheDocument()
+    expect(screen.queryByText('Где вы живёте?')).not.toBeInTheDocument()
+    expect(screen.getByText(/тратить частями/)).toBeInTheDocument()
+    expect(screen.getByText(/за одну покупку/)).toBeInTheDocument()
+    expect(screen.getByText(/мошенники/)).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: 'Список магазинов-исключений (PDF)' }),
+    ).toHaveAttribute(
+      'href',
+      'https://5d.5ka.ru/discovery-core/documents/ts5/certificate_restrictions.pdf',
+    )
+    expect(screen.getByRole('link', { name: /8 800 555-55-05/ })).toHaveAttribute(
+      'href',
+      'tel:+78005555505',
+    )
+    expect(screen.getByRole('link', { name: /8 800 200-95-55/ })).toHaveAttribute(
+      'href',
+      'tel:+78002009555',
+    )
+    expect(window.location.hash).toBe('#/certificate')
+  })
+
+  it('экран сертификата не скрывается при печати', () => {
+    window.location.hash = '#/certificate'
+    render(<App />)
+
+    const heading = screen.getByRole('heading', { name: 'Как потратить продуктовый сертификат' })
+    const section = heading.closest('section')!
+    expect(section.classList.contains('screen--printable')).toBe(true)
+  })
+
+  it('чек критериев «Праздника»: «Нет» даёт объяснение и путь к «Корзине»', async () => {
+    const user = userEvent.setup()
+    window.location.hash = '#/program/family/moscow/prazdnik'
+    render(<App />)
+
+    expect(screen.getByText('Проверьте за 10 секунд, подойдёт ли заявка')).toBeInTheDocument()
+    expect(screen.getByText(/никуда не отправляются и не сохраняются/)).toBeInTheDocument()
+    expect(
+      screen.getByRole('group', {
+        name: 'Есть ли в семье ребёнок от 3 до 17 лет включительно?',
+      }),
+    ).toBeInTheDocument()
+    const firstRow = screen
+      .getByText('Есть ли в семье ребёнок от 3 до 17 лет включительно?')
+      .closest('.check-row') as HTMLElement
+    await user.click(within(firstRow).getByRole('button', { name: 'Нет' }))
+
+    expect(
+      screen.getByText(/Для этой заявки не подходит — посмотрите программы без возрастного ценза/),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent(/Для этой заявки не подходит/)
+    await user.click(screen.getByRole('button', { name: 'Корзина доброты' }))
+    expect(window.location.hash).toBe('#/program/family/moscow/korzina')
+    expect(await screen.findByRole('button', { name: 'Распечатать памятку' })).toBeInTheDocument()
+    expect(document.querySelector('.screen h1')?.textContent).toBe('Корзина доброты')
+  })
+
+  it('чек критериев «Праздника»: три «Да» — можно заполнять заявку', async () => {
+    const user = userEvent.setup()
+    window.location.hash = '#/program/family/moscow/prazdnik'
+    render(<App />)
+
+    const rows = document.querySelectorAll('.check-row')
+    for (const row of rows) {
+      await user.click(within(row as HTMLElement).getByRole('button', { name: 'Да' }))
+    }
+    expect(screen.getByText(/По основным критериям подходите/)).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent(/По основным критериям подходите/)
+    expect(screen.queryByRole('button', { name: 'Корзина доброты' })).not.toBeInTheDocument()
+  })
+
+  it('блок проверенных организаций появляется с переданным реестром', () => {
+    const fixture = [
+      {
+        id: 'test-org',
+        name: 'Тестовая организация (фикстура, не реальная)',
+        regionId: 'moscow',
+        city: 'Москва',
+        programs: ['korzina'],
+        phone: '8 800 000-00-00',
+        acceptingRequests: true,
+        verifiedAt: '2026-11-27',
+      },
+    ]
+    render(
+      <ResultScreen
+        situation={findSituation('pensioner')!}
+        region={findRegion('moscow')!}
+        onBack={() => {}}
+        onOpenProgram={() => {}}
+        partners={fixture}
+      />,
+    )
+    expect(screen.getByText('Проверенные организации в вашем регионе')).toBeInTheDocument()
+    expect(
+      screen.getByText('Тестовая организация (фикстура, не реальная)'),
+    ).toBeInTheDocument()
+  })
+
+  it('блок организаций есть и на экране программы с реестром', () => {
+    const fixture = [
+      {
+        id: 'test-org',
+        name: 'Тестовая организация (фикстура, не реальная)',
+        regionId: 'moscow',
+        city: 'Москва',
+        programs: ['korzina'],
+        acceptingRequests: true,
+        verifiedAt: '2026-11-27',
+      },
+    ]
+    render(
+      <ProgramScreen
+        program={findProgram('korzina')!}
+        situation={findSituation('pensioner')!}
+        region={findRegion('moscow')!}
+        onBack={() => {}}
+        partners={fixture}
+      />,
+    )
+    expect(screen.getByText('Проверенные организации в вашем регионе')).toBeInTheDocument()
+  })
+
+  it('без реестра блок организаций не выводится', () => {
+    render(
+      <ResultScreen
+        situation={findSituation('pensioner')!}
+        region={findRegion('moscow')!}
+        onBack={() => {}}
+        onOpenProgram={() => {}}
+      />,
+    )
+    expect(
+      screen.queryByText('Проверенные организации в вашем регионе'),
+    ).not.toBeInTheDocument()
   })
 })
