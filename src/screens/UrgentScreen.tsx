@@ -10,9 +10,9 @@ interface Props {
 export function UrgentScreen({ region, onBack }: Props) {
   return (
     <section>
-      {region && onBack && (
+      {onBack && (
         <button className="back" type="button" onClick={onBack}>
-          ← Изменить регион
+          {region ? '← Изменить регион' : '← К выбору ситуации'}
         </button>
       )}
       <h1>Если еды нет совсем</h1>
@@ -42,9 +42,11 @@ export function UrgentScreen({ region, onBack }: Props) {
       </ul>
 
       <p className="note">{URGENT_NOTE}</p>
-      <a className="region-link" href="#/situation/urgent">
-        Уточнить помощь в моём регионе
-      </a>
+      {!region && (
+        <a className="region-link" href="#/situation/urgent">
+          Уточнить помощь в моём регионе
+        </a>
+      )}
     </section>
   )
 }

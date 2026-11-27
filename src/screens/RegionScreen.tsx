@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { REGIONS } from '../data'
-import type { Situation } from '../data'
+import { findRegion, REGIONS } from '../data'
+import type { Region, Situation } from '../data'
+import { getSavedRegion } from '../app/storage'
 
 interface Props {
   situation: Situation
@@ -10,6 +11,10 @@ interface Props {
 
 export function RegionScreen({ situation, onBack, onPick }: Props) {
   const [query, setQuery] = useState('')
+  const [savedRegion] = useState<Region | undefined>(() => {
+    const savedId = getSavedRegion()
+    return savedId ? findRegion(savedId) : undefined
+  })
   const normalized = query.trim().toLowerCase()
 
   const visibleRegions = useMemo(() => {
@@ -28,6 +33,12 @@ export function RegionScreen({ situation, onBack, onPick }: Props) {
       <p className="sub">
         {situation.title}. Помощь выдают по месту жительства — точный адрес не нужен.
       </p>
+
+      {savedRegion && (
+        <button className="saved-region" type="button" onClick={() => onPick(savedRegion.id)}>
+          Ваш регион: {savedRegion.title} — продолжить
+        </button>
+      )}
 
       {normalized === '' && (
         <div className="popular">

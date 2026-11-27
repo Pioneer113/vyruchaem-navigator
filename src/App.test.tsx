@@ -151,4 +151,82 @@ describe('приложение', () => {
     expect(screen.queryByText(/Если ни одна программа фонда не подошла/)).not.toBeInTheDocument()
     expect(screen.getByText(/Не фонд: заявки и деньги не принимаем/)).toBeInTheDocument()
   })
+
+  it('на #/urgent есть кнопка возврата к выбору ситуации', async () => {
+    const user = userEvent.setup()
+    window.location.hash = '#/urgent'
+    render(<App />)
+
+    expect(await screen.findByText('Если еды нет совсем')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '← К выбору ситуации' }))
+    expect(await screen.findByText('Какая помощь вам нужна?')).toBeInTheDocument()
+  })
+
+  it('на #/result/urgent/moscow нет дублирующей ссылки на регион', () => {
+    window.location.hash = '#/result/urgent/moscow'
+    render(<App />)
+
+    expect(screen.getByText(/Москва\./)).toBeInTheDocument()
+    expect(screen.queryByText('Уточнить помощь в моём регионе')).not.toBeInTheDocument()
+  })
+
+  it('печатная памятка фудшеринга подтверждает Москву', () => {
+    window.location.hash = '#/program/pensioner/moscow/foodshare'
+    render(<App />)
+
+    const memo = screen.getByTestId('print-memo')
+    expect(within(memo).getByText(/В вашем регионе: подтверждено/)).toBeInTheDocument()
+  })
+
+  it('печатная памятка фудшеринга честна про Татарстан', () => {
+    window.location.hash = '#/program/pensioner/tatarstan/foodshare'
+    render(<App />)
+
+    const memo = screen.getByTestId('print-memo')
+    expect(within(memo).getByText(/В вашем регионе: не подтверждено/)).toBeInTheDocument()
+  })
+
+  it('быстрый выбор сохранённого региона ведёт к результату', async () => {
+    const user = userEvent.setup()
+    localStorage.setItem('vyruchaem.region', 'moscow')
+    window.location.hash = '#/situation/pensioner'
+    render(<App />)
+
+    await user.click(
+      screen.getByRole('button', { name: 'Ваш регион: Москва — продолжить' }),
+    )
+    expect(await screen.findByText('Вам может подойти')).toBeInTheDocument()
+  })
+
+  it('мусор в сохранённом регионе не показывает быстрый выбор', () => {
+    localStorage.setItem('vyruchaem.region', 'nope')
+    window.location.hash = '#/situation/pensioner'
+    render(<App />)
+
+    expect(screen.queryByText(/Ваш регион:/)).not.toBeInTheDocument()
+    expect(screen.getByText('Где вы живёте?')).toBeInTheDocument()
+  })
+
+  it('сценарий помощника: формулировки от лица помогающего', () => {
+    window.location.hash = '#/program/helper/moscow/ezhden'
+    render(<App />)
+
+    expect(screen.queryByText(/Живу одиноко/)).not.toBeInTheDocument()
+    const screenEl = screen
+      .getByRole('button', { name: 'Распечатать памятку' })
+      .closest('.screen') as HTMLElement
+    expect(within(screenEl).getByText(/помогаю одинокому пожилому/)).toBeInTheDocument()
+    const memo = screen.getByTestId('print-memo')
+    expect(within(memo).getByText(/Расскажите о ситуации подопечного/)).toBeInTheDocument()
+    expect(within(memo).queryByText(/живёте одиноко/)).not.toBeInTheDocument()
+  })
+
+  it('памятка помощника содержит скрипт «что сказать»', () => {
+    window.location.hash = '#/program/helper/moscow/ezhden'
+    render(<App />)
+
+    const memo = screen.getByTestId('print-memo')
+    expect(within(memo).getByText('Что сказать')).toBeInTheDocument()
+    expect(within(memo).getByText(/помогаю одинокому пожилому/)).toBeInTheDocument()
+  })
 })

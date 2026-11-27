@@ -14,6 +14,12 @@ function formatDate(iso: string): string {
 }
 
 export function ProgramScreen({ program, situation, region, onBack }: Props) {
+  const inHelper = situation.id === 'helper'
+  const steps = inHelper ? (program.stepsHelper ?? program.steps) : program.steps
+  const sayScript = inHelper
+    ? (program.sayScriptHelper ?? program.sayScript)
+    : program.sayScript
+
   return (
     <>
       <section className="screen">
@@ -41,7 +47,7 @@ export function ProgramScreen({ program, situation, region, onBack }: Props) {
 
         <h2 className="sec-h">Как получить</h2>
         <ol className="steps-list">
-          {program.steps.map((step, index) => (
+          {steps.map((step, index) => (
             <li key={index}>
               <span className="step-num">{index + 1}</span>
               <span>{step}</span>
@@ -57,10 +63,10 @@ export function ProgramScreen({ program, situation, region, onBack }: Props) {
         </ul>
         {program.documentsNote && <p className="small">{program.documentsNote}</p>}
 
-        {program.sayScript && (
+        {sayScript && (
           <>
             <h2 className="sec-h">Что сказать</h2>
-            <blockquote className="say">{program.sayScript}</blockquote>
+            <blockquote className="say">{sayScript}</blockquote>
           </>
         )}
 
@@ -99,10 +105,15 @@ export function ProgramScreen({ program, situation, region, onBack }: Props) {
         <p className="pm-sub">
           {situation.title} · {region.title}
         </p>
+        {program.id === 'foodshare' && (
+          <p className="pm-note">
+            В вашем регионе: {region.foodshare ? 'подтверждено' : 'не подтверждено'}.
+          </p>
+        )}
         <p className="pm-benefit">{program.benefit}</p>
         <h2 className="pm-h">Как получить</h2>
         <ol className="pm-steps">
-          {program.steps.map((step, index) => (
+          {steps.map((step, index) => (
             <li key={index}>{step}</li>
           ))}
         </ol>
@@ -113,6 +124,12 @@ export function ProgramScreen({ program, situation, region, onBack }: Props) {
           ))}
         </ul>
         {program.documentsNote && <p className="pm-note">{program.documentsNote}</p>}
+        {sayScript && (
+          <>
+            <h2 className="pm-h">Что сказать</h2>
+            <p className="pm-say">{sayScript}</p>
+          </>
+        )}
         <div className="pm-foot">
           <img
             className="pm-qr"

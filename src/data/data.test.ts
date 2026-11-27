@@ -147,4 +147,17 @@ describe('данные навигатора', () => {
     expect(programsForSituation('family').map((p) => p.id)[0]).toBe('prazdnik')
     expect(programsForSituation('unknown')).toEqual([])
   })
+
+  it('у «Выручаем каждый день» есть шаги и скрипт для помощника', () => {
+    const program = findProgram('ezhden')!
+    expect(program.stepsHelper).toBeDefined()
+    expect(program.stepsHelper![1]).toContain('подопечного')
+    expect(program.sayScriptHelper).toBeDefined()
+    expect(program.sayScriptHelper!).toContain('одинокому пожилому')
+  })
+
+  it('скрипт помощника «Корзины» и шаги помощника «Праздника» от лица помогающего', () => {
+    expect(findProgram('korzina')!.sayScriptHelper).toContain('человеку в трудной')
+    expect(findProgram('prazdnik')!.stepsHelper![0]).toContain('родитель или законный представитель')
+  })
 })
