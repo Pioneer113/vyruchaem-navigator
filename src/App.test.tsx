@@ -51,6 +51,10 @@ describe('приложение', () => {
     expect(screen.getByText('112')).toBeInTheDocument()
     expect(screen.getByText(/не выдаёт еду в день обращения/)).toBeInTheDocument()
     expect(screen.getByText('Уточнить помощь в моём регионе')).toBeInTheDocument()
+    expect(screen.getByText('8 800 234-07-07').closest('a')).toHaveAttribute(
+      'href',
+      'tel:+78002340707',
+    )
     expect(window.location.hash).toBe('#/urgent')
   })
 
@@ -72,6 +76,10 @@ describe('приложение', () => {
 
     expect(await screen.findByText('Другие маршруты')).toBeInTheDocument()
     expect(screen.getByText('Банк еды «Русь»')).toBeInTheDocument()
+    expect(screen.getByText('8 800 234-07-07').closest('a')).toHaveAttribute(
+      'href',
+      'tel:+78002340707',
+    )
   })
 
   it('для «другая ситуация» показывает только маршруты', async () => {

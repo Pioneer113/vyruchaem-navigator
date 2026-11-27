@@ -1,5 +1,6 @@
 import { URGENT_NOTE, URGENT_ROUTES } from '../data'
 import type { Region } from '../data'
+import { telHref } from '../app/phone'
 
 interface Props {
   region?: Region
@@ -27,7 +28,7 @@ export function UrgentScreen({ region, onBack }: Props) {
             <h2 className="pc-title">{route.title}</h2>
             <p className="pc-meta">{route.text}</p>
             {route.phone && (
-              <a className="btn-link small-btn" href={`tel:${route.phone.replace(/\s/g, '')}`}>
+              <a className="btn-link small-btn" href={telHref(route.phone)}>
                 {route.phone}
               </a>
             )}

@@ -1,5 +1,6 @@
 import { ROUTES, programsForSituation } from '../data'
 import type { Region, Situation } from '../data'
+import { telHref } from '../app/phone'
 
 interface Props {
   situation: Situation
@@ -65,7 +66,7 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
             <p className="r-text">{route.text}</p>
             <div className="r-links">
               {route.phone && (
-                <a href={`tel:${route.phone.replace(/\s/g, '')}`}>{route.phone}</a>
+                <a href={telHref(route.phone)}>{route.phone}</a>
               )}
               {route.url && (
                 <a href={route.url} target="_blank" rel="noreferrer">

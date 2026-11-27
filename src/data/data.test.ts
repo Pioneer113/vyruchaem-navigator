@@ -98,6 +98,12 @@ describe('данные навигатора', () => {
     expect(text).toMatch(/в семье не хватает/)
   })
 
+  it('срочные тексты без «карта пунктов» и «помощи и продуктов»', () => {
+    const texts = JSON.stringify([URGENT_ROUTES, URGENT_NOTE]).toLowerCase()
+    expect(texts).not.toContain('помощи и продуктов')
+    expect(texts).not.toContain('карта пунктов')
+  })
+
   it('фудшеринг отмечен ровно в 9 регионах', () => {
     const ids = REGIONS.filter((region) => region.foodshare)
       .map((region) => region.id)
