@@ -160,4 +160,46 @@ describe('данные навигатора', () => {
     expect(findProgram('korzina')!.sayScriptHelper).toContain('человеку в трудной')
     expect(findProgram('prazdnik')!.stepsHelper![0]).toContain('родитель или законный представитель')
   })
+
+  it('«Банк еды „Русь“» — ровно 17 регионов с флагом', () => {
+    const ids = REGIONS.filter((region) => region.foodbankRus)
+      .map((region) => region.id)
+      .sort()
+    expect(ids).toEqual([
+      'bashkortostan',
+      'chelyabinsk',
+      'kostroma',
+      'krasnodar',
+      'leningrad',
+      'lipetsk',
+      'moscow-oblast',
+      'novgorod',
+      'pskov',
+      'rostov',
+      'ryazan',
+      'sverdlovsk',
+      'tula',
+      'udmurtia',
+      'vladimir',
+      'vologda',
+      'voronezh',
+    ])
+  })
+
+  it('контакты отделений РКК — 20 регионов, включая Тулу и Татарстан', () => {
+    expect(REGIONS.filter((region) => region.redcrossContact)).toHaveLength(20)
+    expect(REGIONS.find((region) => region.id === 'tula')!.redcrossContact!.phone).toBe(
+      '8 (487) 250-51-36',
+    )
+    expect(REGIONS.find((region) => region.id === 'tatarstan')!.redcrossContact!.phone).toBe(
+      '8 (992) 072-02-05',
+    )
+  })
+
+  it('у РКК в обоих списках маршрутов есть каталог отделений', () => {
+    const fromRoutes = ROUTES.find((route) => route.id === 'rkk')!
+    const fromUrgent = URGENT_ROUTES.find((route) => route.id === 'rkk')!
+    expect(fromRoutes.url2).toContain('regionalnye-otdeleniya')
+    expect(fromUrgent.url2).toContain('regionalnye-otdeleniya')
+  })
 })

@@ -40,6 +40,8 @@ export interface Region {
   title: string
   popular?: boolean
   foodshare?: boolean
+  foodbankRus?: boolean
+  redcrossContact?: { phone?: string; url?: string; address?: string }
 }
 
 export interface UrgentRoute {
@@ -49,6 +51,8 @@ export interface UrgentRoute {
   phone?: string
   url?: string
   urlLabel?: string
+  url2?: string
+  url2Label?: string
 }
 
 export interface RouteInfo {
@@ -58,6 +62,8 @@ export interface RouteInfo {
   phone?: string
   url?: string
   urlLabel?: string
+  url2?: string
+  url2Label?: string
 }
 
 export const URGENT_NOTE =
@@ -80,6 +86,8 @@ export const URGENT_ROUTES: UrgentRoute[] = [
     title: 'Красный Крест',
     text: 'Продуктовые наборы, гигиена, одежда. Линия работает по будням с 10:00 до 19:00 (МСК).',
     phone: '8 800 234-07-07',
+    url2: 'https://redcross.ru/contacts/regionalnye-otdeleniya/',
+    url2Label: 'Каталог отделений',
   },
   {
     id: 'rus',
@@ -117,6 +125,8 @@ export const ROUTES: RouteInfo[] = [
     phone: '8 800 234-07-07',
     url: 'https://redcross.ru/activity/sluzhba-pomoshchi-adresnaya-podderzhka-dlya-lyudey-v-trudnoy-zhiznennoy-situatsii/',
     urlLabel: 'redcross.ru',
+    url2: 'https://redcross.ru/contacts/regionalnye-otdeleniya/',
+    url2Label: 'Каталог отделений',
   },
   {
     id: 'rus',
@@ -309,11 +319,28 @@ export const SITUATIONS: Situation[] = [
 ]
 
 export const REGIONS: Region[] = [
-  { id: 'moscow', title: 'Москва', popular: true, foodshare: true },
-  { id: 'spb', title: 'Санкт-Петербург', popular: true, foodshare: true },
+  {
+    id: 'moscow',
+    title: 'Москва',
+    popular: true,
+    foodshare: true,
+    redcrossContact: { phone: '8 (499) 840-80-08', url: 'https://mos.redcross.ru/' },
+  },
+  {
+    id: 'spb',
+    title: 'Санкт-Петербург',
+    popular: true,
+    foodshare: true,
+    redcrossContact: { phone: '8 (812) 571-10-91' },
+  },
   { id: 'adygea', title: 'Республика Адыгея' },
   { id: 'altai-republic', title: 'Республика Алтай' },
-  { id: 'bashkortostan', title: 'Республика Башкортостан' },
+  {
+    id: 'bashkortostan',
+    title: 'Республика Башкортостан',
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (347) 251-64-11', url: 'https://www.redcrossufa.ru' },
+  },
   { id: 'buryatia', title: 'Республика Бурятия' },
   { id: 'dagestan', title: 'Республика Дагестан' },
   { id: 'dnr', title: 'Донецкая Народная Республика' },
@@ -329,16 +356,31 @@ export const REGIONS: Region[] = [
   { id: 'mordovia', title: 'Республика Мордовия' },
   { id: 'sakha', title: 'Республика Саха (Якутия)' },
   { id: 'north-osetia', title: 'Республика Северная Осетия — Алания' },
-  { id: 'tatarstan', title: 'Республика Татарстан' },
+  {
+    id: 'tatarstan',
+    title: 'Республика Татарстан',
+    redcrossContact: { phone: '8 (992) 072-02-05' },
+  },
   { id: 'tyva', title: 'Республика Тыва' },
-  { id: 'udmurtia', title: 'Удмуртская Республика' },
+  {
+    id: 'udmurtia',
+    title: 'Удмуртская Республика',
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (912) 021-94-37' },
+  },
   { id: 'khakassia', title: 'Республика Хакасия' },
   { id: 'chechnya', title: 'Чеченская Республика' },
   { id: 'chuvashia', title: 'Чувашская Республика' },
   { id: 'altai-krai', title: 'Алтайский край' },
   { id: 'zabaykalsky', title: 'Забайкальский край' },
   { id: 'kamchatka', title: 'Камчатский край' },
-  { id: 'krasnodar', title: 'Краснодарский край', foodshare: true },
+  {
+    id: 'krasnodar',
+    title: 'Краснодарский край',
+    foodshare: true,
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (861) 262-50-37', url: 'https://krasnodar.redcross.ru/' },
+  },
   { id: 'krasnoyarsk', title: 'Красноярский край' },
   { id: 'perm', title: 'Пермский край' },
   { id: 'primorsky', title: 'Приморский край' },
@@ -349,10 +391,25 @@ export const REGIONS: Region[] = [
   { id: 'astrakhan', title: 'Астраханская область' },
   { id: 'belgorod', title: 'Белгородская область' },
   { id: 'bryansk', title: 'Брянская область' },
-  { id: 'vladimir', title: 'Владимирская область' },
+  {
+    id: 'vladimir',
+    title: 'Владимирская область',
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (910) 678-59-75', url: 'https://vladimir.redcross.ru/' },
+  },
   { id: 'volgograd', title: 'Волгоградская область' },
-  { id: 'vologda', title: 'Вологодская область' },
-  { id: 'voronezh', title: 'Воронежская область' },
+  {
+    id: 'vologda',
+    title: 'Вологодская область',
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (8172) 27-02-20' },
+  },
+  {
+    id: 'voronezh',
+    title: 'Воронежская область',
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (930) 423-89-33', url: 'https://voronezh.redcross.ru/' },
+  },
   { id: 'zaporozhye', title: 'Запорожская область' },
   { id: 'ivanovo', title: 'Ивановская область' },
   { id: 'irkutsk', title: 'Иркутская область' },
@@ -360,37 +417,96 @@ export const REGIONS: Region[] = [
   { id: 'kaluga', title: 'Калужская область' },
   { id: 'kemerovo', title: 'Кемеровская область — Кузбасс' },
   { id: 'kirov', title: 'Кировская область' },
-  { id: 'kostroma', title: 'Костромская область' },
+  {
+    id: 'kostroma',
+    title: 'Костромская область',
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (980) 108-51-91', url: 'https://kostroma.redcross.ru/' },
+  },
   { id: 'kurgan', title: 'Курганская область' },
   { id: 'kursk', title: 'Курская область' },
-  { id: 'leningrad', title: 'Ленинградская область' },
-  { id: 'lipetsk', title: 'Липецкая область' },
+  {
+    id: 'leningrad',
+    title: 'Ленинградская область',
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (911) 729-25-68' },
+  },
+  {
+    id: 'lipetsk',
+    title: 'Липецкая область',
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (915) 551-91-71', url: 'https://lipetsk.redcross.ru/' },
+  },
   { id: 'magadan', title: 'Магаданская область' },
-  { id: 'moscow-oblast', title: 'Московская область' },
+  {
+    id: 'moscow-oblast',
+    title: 'Московская область',
+    foodbankRus: true,
+    redcrossContact: { url: 'https://mosobl.redcross.ru/' },
+  },
   { id: 'murmansk', title: 'Мурманская область', foodshare: true },
   { id: 'nizhny-novgorod', title: 'Нижегородская область' },
-  { id: 'novgorod', title: 'Новгородская область' },
+  {
+    id: 'novgorod',
+    title: 'Новгородская область',
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (995) 341-13-86' },
+  },
   { id: 'novosibirsk', title: 'Новосибирская область' },
   { id: 'omsk', title: 'Омская область' },
   { id: 'orenburg', title: 'Оренбургская область' },
   { id: 'oryol', title: 'Орловская область' },
   { id: 'penza', title: 'Пензенская область' },
-  { id: 'pskov', title: 'Псковская область' },
-  { id: 'rostov', title: 'Ростовская область', foodshare: true },
-  { id: 'ryazan', title: 'Рязанская область', foodshare: true },
+  {
+    id: 'pskov',
+    title: 'Псковская область',
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (8112) 72-09-11' },
+  },
+  {
+    id: 'rostov',
+    title: 'Ростовская область',
+    foodshare: true,
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (863) 251-32-45', url: 'https://rostov.redcross.ru/' },
+  },
+  {
+    id: 'ryazan',
+    title: 'Рязанская область',
+    foodshare: true,
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (920) 983-07-01', url: 'https://ryazan.redcross.ru/' },
+  },
   { id: 'samara', title: 'Самарская область' },
   { id: 'saratov', title: 'Саратовская область' },
   { id: 'sakhalin', title: 'Сахалинская область' },
-  { id: 'sverdlovsk', title: 'Свердловская область', foodshare: true },
+  {
+    id: 'sverdlovsk',
+    title: 'Свердловская область',
+    foodshare: true,
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (343) 385-71-72', url: 'https://sverdlobl.redcross.ru' },
+  },
   { id: 'smolensk', title: 'Смоленская область' },
   { id: 'tambov', title: 'Тамбовская область' },
   { id: 'tver', title: 'Тверская область' },
   { id: 'tomsk', title: 'Томская область', foodshare: true },
-  { id: 'tula', title: 'Тульская область' },
+  {
+    id: 'tula',
+    title: 'Тульская область',
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (487) 250-51-36', url: 'https://tula.redcross.ru/' },
+  },
   { id: 'tyumen', title: 'Тюменская область' },
   { id: 'ulyanovsk', title: 'Ульяновская область' },
   { id: 'kherson', title: 'Херсонская область' },
-  { id: 'chelyabinsk', title: 'Челябинская область', foodshare: true },
+  {
+    id: 'chelyabinsk',
+    title: 'Челябинская область',
+    foodshare: true,
+    foodbankRus: true,
+    redcrossContact: { phone: '8 (939) 847-46-43', url: 'https://chelyabinsk.redcross.ru' },
+  },
   { id: 'yaroslavl', title: 'Ярославская область' },
   { id: 'sevastopol', title: 'Севастополь' },
   { id: 'jewish', title: 'Еврейская автономная область' },

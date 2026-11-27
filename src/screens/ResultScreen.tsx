@@ -12,6 +12,10 @@ interface Props {
 export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props) {
   const programs = programsForSituation(situation.id)
   const isOther = situation.kind === 'other'
+  const rusRoute = ROUTES.find((route) => route.id === 'rus')!
+  const orderedRoutes = region.foodbankRus
+    ? ROUTES
+    : [...ROUTES.filter((route) => route.id !== 'rus'), rusRoute]
 
   return (
     <section>
@@ -60,10 +64,33 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
         </p>
       )}
       <ul className="routes-list">
-        {ROUTES.map((route) => (
+        {orderedRoutes.map((route) => (
           <li key={route.id} className="route-item">
             <span className="r-title">{route.title}</span>
             <p className="r-text">{route.text}</p>
+            {route.id === 'rus' && (
+              <p className="small">
+                {region.foodbankRus
+                  ? 'В вашем регионе есть банк еды «Русь».'
+                  : 'В вашем регионе нет отделения банка еды «Русь».'}
+              </p>
+            )}
+            {route.id === 'rkk' && region.redcrossContact && (
+              <p className="small contact-line">
+                Отделение в вашем регионе:{' '}
+                {region.redcrossContact.phone && (
+                  <a href={telHref(region.redcrossContact.phone)}>
+                    {region.redcrossContact.phone}
+                  </a>
+                )}
+                {region.redcrossContact.phone && region.redcrossContact.url && ' · '}
+                {region.redcrossContact.url && (
+                  <a href={region.redcrossContact.url} target="_blank" rel="noreferrer">
+                    сайт отделения
+                  </a>
+                )}
+              </p>
+            )}
             <div className="r-links">
               {route.phone && (
                 <a href={telHref(route.phone)}>{route.phone}</a>
@@ -71,6 +98,11 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
               {route.url && (
                 <a href={route.url} target="_blank" rel="noreferrer">
                   {route.urlLabel ?? route.url}
+                </a>
+              )}
+              {route.url2 && (
+                <a href={route.url2} target="_blank" rel="noreferrer">
+                  {route.url2Label ?? route.url2}
                 </a>
               )}
             </div>

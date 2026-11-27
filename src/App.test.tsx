@@ -229,4 +229,42 @@ describe('приложение', () => {
     expect(within(memo).getByText('Что сказать')).toBeInTheDocument()
     expect(within(memo).getByText(/помогаю одинокому пожилому/)).toBeInTheDocument()
   })
+
+  it('Тульская область: банк еды «Русь» есть — честная пометка', () => {
+    window.location.hash = '#/result/pensioner/tula'
+    render(<App />)
+
+    expect(screen.getByText('В вашем регионе есть банк еды «Русь».')).toBeInTheDocument()
+  })
+
+  it('Татарстан: банка еды «Русь» нет — пометка и карточка в конце списка', () => {
+    window.location.hash = '#/result/pensioner/tatarstan'
+    render(<App />)
+
+    expect(
+      screen.getByText('В вашем регионе нет отделения банка еды «Русь».'),
+    ).toBeInTheDocument()
+    const items = document.querySelectorAll('.route-item')
+    expect(items[items.length - 1].textContent).toContain('Банк еды «Русь»')
+  })
+
+  it('на срочном экране региона виден телефон отделения Красного Креста', () => {
+    window.location.hash = '#/result/urgent/tula'
+    render(<App />)
+
+    expect(screen.getByText('8 (487) 250-51-36').closest('a')).toHaveAttribute(
+      'href',
+      'tel:+74872505136',
+    )
+  })
+
+  it('на #/urgent есть ссылка на каталог отделений РКК', () => {
+    window.location.hash = '#/urgent'
+    render(<App />)
+
+    expect(screen.getByRole('link', { name: 'Каталог отделений' })).toHaveAttribute(
+      'href',
+      'https://redcross.ru/contacts/regionalnye-otdeleniya/',
+    )
+  })
 })
