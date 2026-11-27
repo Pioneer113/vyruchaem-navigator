@@ -12,7 +12,7 @@ describe('приложение', () => {
   it('показывает ситуации на главной', () => {
     render(<App />)
     expect(screen.getByText('Какая помощь вам нужна?')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Я одинокий пенсионер' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Я пожилой человек, живу одиноко' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Мне нечего есть прямо сейчас' })).toBeInTheDocument()
   })
 
@@ -20,7 +20,7 @@ describe('приложение', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Я одинокий пенсионер' }))
+    await user.click(screen.getByRole('button', { name: 'Я пожилой человек, живу одиноко' }))
     expect(await screen.findByText('Где вы живёте?')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: /Москва/ }))
@@ -51,7 +51,7 @@ describe('приложение', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Я одинокий пенсионер' }))
+    await user.click(screen.getByRole('button', { name: 'Я пожилой человек, живу одиноко' }))
     await user.click(await screen.findByRole('button', { name: /Москва/ }))
 
     expect(await screen.findByText('Другие маршруты')).toBeInTheDocument()
@@ -87,7 +87,7 @@ describe('приложение', () => {
     const printSpy = vi.spyOn(window, 'print').mockImplementation(() => {})
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Я одинокий пенсионер' }))
+    await user.click(screen.getByRole('button', { name: 'Я пожилой человек, живу одиноко' }))
     await user.click(await screen.findByRole('button', { name: /Москва/ }))
     await user.click(screen.getAllByRole('button', { name: 'Подробнее' })[0])
     await user.click(await screen.findByRole('button', { name: 'Распечатать памятку' }))

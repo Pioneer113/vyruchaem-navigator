@@ -81,6 +81,17 @@ describe('данные навигатора', () => {
     }
   })
 
+  it('родовые формы: тексты без «одинокий/живёте один/Слышал»', () => {
+    const text = JSON.stringify([SITUATIONS, PROGRAMS]).toLowerCase()
+    expect(text).not.toMatch(/одинокий/)
+    expect(text).not.toMatch(/живёте один(?!око)/)
+    expect(text).not.toMatch(/живу один(?!око)/)
+    expect(text).not.toMatch(/слышал/)
+    expect(text).not.toMatch(/(?<!в )семье не хватает/)
+    expect(text).toMatch(/живу одиноко/)
+    expect(text).toMatch(/в семье не хватает/)
+  })
+
   it('список регионов — 85 субъектов, Москва и Петербург первыми', () => {
     expect(REGIONS).toHaveLength(85)
     expect(REGIONS[0].id).toBe('moscow')
