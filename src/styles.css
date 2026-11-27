@@ -131,7 +131,7 @@ h1 {
 
 .popular {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px;
   margin-top: 24px;
 }
@@ -145,10 +145,17 @@ h1 {
   border: none;
   border-radius: 16px;
   cursor: pointer;
+  overflow-wrap: anywhere;
 }
 
 .popular button:hover {
   background: #1e4636;
+}
+
+@media (max-width: 359px) {
+  .popular {
+    grid-template-columns: 1fr;
+  }
 }
 
 .search {
@@ -488,6 +495,7 @@ h1 {
 /* Размер шрифта и шапка */
 .topbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
