@@ -332,6 +332,11 @@ describe('приложение', () => {
 
     expect(screen.getByText('Проверьте за 10 секунд, подойдёт ли заявка')).toBeInTheDocument()
     expect(screen.getByText(/никуда не отправляются и не сохраняются/)).toBeInTheDocument()
+    expect(
+      screen.getByRole('group', {
+        name: 'Есть ли в семье ребёнок от 3 до 17 лет включительно?',
+      }),
+    ).toBeInTheDocument()
     const firstRow = screen
       .getByText('Есть ли в семье ребёнок от 3 до 17 лет включительно?')
       .closest('.check-row') as HTMLElement

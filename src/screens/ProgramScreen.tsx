@@ -54,8 +54,12 @@ function ReadinessCheck({
       <p className="small">Ответы никуда не отправляются и не сохраняются.</p>
       {READINESS_QUESTIONS.map((question, index) => (
         <div key={question.text} className="check-row">
-          <p>{question.text}</p>
-          <div className="check-btns">
+          <p id={`check-q-${index}`}>{question.text}</p>
+          <div
+            className="check-btns"
+            role="group"
+            aria-labelledby={`check-q-${index}`}
+          >
             <button
               type="button"
               aria-pressed={answers[index] === true}
