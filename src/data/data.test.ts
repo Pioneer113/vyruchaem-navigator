@@ -11,10 +11,13 @@ import {
 } from './index'
 
 describe('данные навигатора', () => {
-  it('шесть ситуаций и вариант «другая»', () => {
-    expect(SITUATIONS).toHaveLength(7)
-    expect(new Set(SITUATIONS.map((s) => s.id)).size).toBe(7)
+  it('семь ситуаций, вариант «другая» и сертификат', () => {
+    expect(SITUATIONS).toHaveLength(8)
+    expect(new Set(SITUATIONS.map((s) => s.id)).size).toBe(8)
     expect(SITUATIONS.filter((s) => s.kind === 'other')).toHaveLength(1)
+    const certificate = SITUATIONS.find((s) => s.id === 'certificate')!
+    expect(certificate.kind).toBe('certificate')
+    expect(certificate.programs).toEqual([])
   })
 
   it('все программы из ситуаций существуют', () => {

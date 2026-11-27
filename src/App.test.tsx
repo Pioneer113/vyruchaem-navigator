@@ -293,4 +293,32 @@ describe('приложение', () => {
     expect(within(screenEl).getByText('Важные ограничения')).toBeInTheDocument()
     expect(screen.queryByText('Сколько ждать')).not.toBeInTheDocument()
   })
+
+  it('сертификат: инструкция сразу, без выбора региона и с горячими линиями', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'У меня уже есть продуктовый сертификат' }))
+
+    expect(await screen.findByText('Как потратить продуктовый сертификат')).toBeInTheDocument()
+    expect(screen.queryByText('Где вы живёте?')).not.toBeInTheDocument()
+    expect(screen.getByText(/тратить частями/)).toBeInTheDocument()
+    expect(screen.getByText(/за одну покупку/)).toBeInTheDocument()
+    expect(screen.getByText(/мошенники/)).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: 'Список магазинов-исключений (PDF)' }),
+    ).toHaveAttribute(
+      'href',
+      'https://5d.5ka.ru/discovery-core/documents/ts5/certificate_restrictions.pdf',
+    )
+    expect(screen.getByRole('link', { name: /8 800 555-55-05/ })).toHaveAttribute(
+      'href',
+      'tel:+78005555505',
+    )
+    expect(screen.getByRole('link', { name: /8 800 200-95-55/ })).toHaveAttribute(
+      'href',
+      'tel:+78002009555',
+    )
+    expect(window.location.hash).toBe('#/certificate')
+  })
 })

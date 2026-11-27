@@ -1,16 +1,12 @@
 import qrHome from '../assets/qr-home.svg'
 import type { Program, Region, Situation } from '../data'
+import { formatDate } from '../app/dates'
 
 interface Props {
   program: Program
   situation: Situation
   region: Region
   onBack: () => void
-}
-
-function formatDate(iso: string): string {
-  const [year, month, day] = iso.split('-')
-  return `${day}.${month}.${year}`
 }
 
 export function ProgramScreen({ program, situation, region, onBack }: Props) {

@@ -5,7 +5,10 @@ interface Props {
 }
 
 export function SituationScreen({ onPick }: Props) {
-  const situations = SITUATIONS.filter((situation) => situation.kind !== 'other')
+  const situations = SITUATIONS.filter(
+    (situation) => situation.kind !== 'other' && situation.kind !== 'certificate',
+  )
+  const certificate = SITUATIONS.find((situation) => situation.kind === 'certificate')!
   const other = SITUATIONS.find((situation) => situation.kind === 'other')!
 
   return (
@@ -26,6 +29,13 @@ export function SituationScreen({ onPick }: Props) {
             {situation.title}
           </button>
         ))}
+        <button
+          type="button"
+          className="tile tile--quiet"
+          onClick={() => onPick(certificate.id)}
+        >
+          {certificate.title}
+        </button>
         <button
           type="button"
           className="tile tile--quiet"

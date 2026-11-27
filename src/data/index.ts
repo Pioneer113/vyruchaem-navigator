@@ -1,4 +1,4 @@
-export type SituationKind = 'normal' | 'urgent' | 'other'
+export type SituationKind = 'normal' | 'urgent' | 'other' | 'certificate'
 
 export interface Situation {
   id: string
@@ -338,12 +338,46 @@ export const SITUATIONS: Situation[] = [
     kind: 'normal',
   },
   {
+    id: 'certificate',
+    title: 'У меня уже есть продуктовый сертификат',
+    programs: [],
+    kind: 'certificate',
+  },
+  {
     id: 'other',
     title: 'Моя ситуация другая',
     programs: [],
     kind: 'other',
   },
 ]
+
+export const CERTIFICATE_INFO = {
+  title: 'Как потратить продуктовый сертификат',
+  intro:
+    'Сертификат уже готов к использованию: никаких дополнительных активаций не нужно. Срок действия указан на самом сертификате.',
+  rules: [
+    'В «Пятёрочке» сертификат можно тратить частями — сделайте несколько покупок, пока не используете весь номинал.',
+    'В «Перекрёстке» сертификат нужно использовать полностью — за одну покупку.',
+    'Перед походом проверьте список магазинов, где не принимают сертификаты.',
+  ],
+  exclusionsUrl:
+    'https://5d.5ka.ru/discovery-core/documents/ts5/certificate_restrictions.pdf',
+  exclusionsLabel: 'Список магазинов-исключений (PDF)',
+  cashierTitle: 'Если кассир отказывается принимать сертификат',
+  cashierSteps: [
+    'Покажите кассиру подробную инструкцию — она напечатана на самом сертификате',
+    'Убедитесь, что этот магазин принимает сертификаты (список выше)',
+  ],
+  hotlines: [
+    { label: 'Горячая линия «Пятёрочки»', phone: '8 800 555-55-05' },
+    { label: 'Горячая линия «Перекрёстка»', phone: '8 800 200-95-55' },
+  ],
+  fraudNote:
+    'За активацию сертификата никто не должен просить деньги: сертификат уже активирован. Если просят оплатить «активацию» — это мошенники.',
+  sourceUrl: 'https://праздникнастол.рф/',
+  sourceName: 'праздникнастол.рф',
+  verifiedAt: '2026-11-27',
+} as const
 
 export const REGIONS: Region[] = [
   {
