@@ -100,4 +100,16 @@ describe('приложение', () => {
 
     printSpy.mockRestore()
   })
+
+  it('не дублирует дисклеймеры на экране «другая ситуация»', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Моя ситуация другая' }))
+    await user.click(await screen.findByRole('button', { name: /Москва/ }))
+
+    expect(screen.queryByText(/Мы не фонд и не принимаем заявки/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Если ни одна программа фонда не подошла/)).not.toBeInTheDocument()
+    expect(screen.getByText(/Не фонд: заявки и деньги не принимаем/)).toBeInTheDocument()
+  })
 })

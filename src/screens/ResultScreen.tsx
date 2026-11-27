@@ -45,9 +45,11 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
       )}
 
       <h2 className="sec-h">Другие маршруты</h2>
-      <p className="small">
-        Если ни одна программа фонда не подошла — вот официальные каналы помощи.
-      </p>
+      {!isOther && (
+        <p className="small">
+          Если ни одна программа фонда не подошла — вот официальные каналы помощи.
+        </p>
+      )}
       <ul className="routes-list">
         {ROUTES.map((route) => (
           <li key={route.id} className="route-item">
@@ -66,10 +68,6 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
           </li>
         ))}
       </ul>
-
-      <p className="note">
-        Мы не фонд и не принимаем заявки. Помощь выдают фонд «Выручаем» и его партнёры.
-      </p>
     </section>
   )
 }
