@@ -87,6 +87,14 @@ describe('данные навигатора', () => {
     }
   })
 
+  it('статус акции и склонения уточнены', () => {
+    const text = JSON.stringify(PROGRAMS)
+    expect(text).not.toContain('организацию-партнёра')
+    expect(text).not.toContain('организацию — партнёра')
+    expect(text).not.toContain('Одинокие пожилые,')
+    expect(findProgram('ezhden')!.statusNote).toMatch(/периодически/)
+  })
+
   it('родовые формы: тексты без «одинокий/живёте один/Слышал»', () => {
     const text = JSON.stringify([SITUATIONS, PROGRAMS]).toLowerCase()
     expect(text).not.toMatch(/одинокий/)
