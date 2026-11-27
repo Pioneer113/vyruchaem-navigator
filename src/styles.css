@@ -329,6 +329,14 @@ h1 {
   text-underline-offset: 2px;
 }
 
+.region-link:focus-visible,
+.src a:focus-visible,
+.src-link:focus-visible,
+.r-links a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* Карточка программы */
 .sec-h {
   font-size: 20px;

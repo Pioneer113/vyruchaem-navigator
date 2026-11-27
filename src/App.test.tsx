@@ -151,4 +151,22 @@ describe('приложение', () => {
     expect(screen.queryByText(/Если ни одна программа фонда не подошла/)).not.toBeInTheDocument()
     expect(screen.getByText(/Не фонд: заявки и деньги не принимаем/)).toBeInTheDocument()
   })
+
+  it('на #/urgent есть кнопка возврата к выбору ситуации', async () => {
+    const user = userEvent.setup()
+    window.location.hash = '#/urgent'
+    render(<App />)
+
+    expect(await screen.findByText('Если еды нет совсем')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '← К выбору ситуации' }))
+    expect(await screen.findByText('Какая помощь вам нужна?')).toBeInTheDocument()
+  })
+
+  it('на #/result/urgent/moscow нет дублирующей ссылки на регион', () => {
+    window.location.hash = '#/result/urgent/moscow'
+    render(<App />)
+
+    expect(screen.getByText(/Москва\./)).toBeInTheDocument()
+    expect(screen.queryByText('Уточнить помощь в моём регионе')).not.toBeInTheDocument()
+  })
 })

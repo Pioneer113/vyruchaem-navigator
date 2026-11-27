@@ -61,7 +61,7 @@ export default function App() {
         />
       )}
 
-      {route.name === 'urgent' && <UrgentScreen />}
+      {route.name === 'urgent' && <UrgentScreen onBack={() => navigate(hashFor.home())} />}
 
       {route.name === 'region' && situation && (
         <RegionScreen
