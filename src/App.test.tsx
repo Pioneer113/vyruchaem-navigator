@@ -169,4 +169,20 @@ describe('приложение', () => {
     expect(screen.getByText(/Москва\./)).toBeInTheDocument()
     expect(screen.queryByText('Уточнить помощь в моём регионе')).not.toBeInTheDocument()
   })
+
+  it('печатная памятка фудшеринга подтверждает Москву', () => {
+    window.location.hash = '#/program/pensioner/moscow/foodshare'
+    render(<App />)
+
+    const memo = screen.getByTestId('print-memo')
+    expect(within(memo).getByText(/В вашем регионе: подтверждено/)).toBeInTheDocument()
+  })
+
+  it('печатная памятка фудшеринга честна про Татарстан', () => {
+    window.location.hash = '#/program/pensioner/tatarstan/foodshare'
+    render(<App />)
+
+    const memo = screen.getByTestId('print-memo')
+    expect(within(memo).getByText(/В вашем регионе: не подтверждено/)).toBeInTheDocument()
+  })
 })

@@ -99,6 +99,11 @@ export function ProgramScreen({ program, situation, region, onBack }: Props) {
         <p className="pm-sub">
           {situation.title} · {region.title}
         </p>
+        {program.id === 'foodshare' && (
+          <p className="pm-note">
+            В вашем регионе: {region.foodshare ? 'подтверждено' : 'не подтверждено'}.
+          </p>
+        )}
         <p className="pm-benefit">{program.benefit}</p>
         <h2 className="pm-h">Как получить</h2>
         <ol className="pm-steps">
