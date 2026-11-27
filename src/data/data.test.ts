@@ -54,6 +54,12 @@ describe('данные навигатора', () => {
     expect(program.deadline).toBe('2026-12-20')
     expect(program.steps[0]).toContain('елкажеланий')
     expect(program.documents.join(' ')).toMatch(/PDF/)
+    expect(program.documents.join(' ')).toContain('признании семьи малоимущей')
+    expect(program.documents.join(' ')).toContain('среднедушевом доходе ниже величины')
+    expect(program.documents.join(' ')).toContain('многодетной семьи')
+    expect(program.documents.join(' ')).not.toContain('малоимуществе')
+    expect(program.documents.join(' ')).not.toContain('Удостоверение многодетности')
+    expect(program.steps.join(' ')).toContain('открывающейся после заполнения заявки')
   })
 
   it('«Корзина доброты» честно говорит: наборы развозят по спискам, прийти нельзя', () => {
