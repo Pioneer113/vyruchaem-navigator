@@ -348,6 +348,7 @@ describe('приложение', () => {
     window.location.hash = '#/program/family/moscow/prazdnik'
     render(<App />)
 
+    expect(screen.getByRole('status')).toBeInTheDocument()
     expect(screen.getByText('Проверьте за 10 секунд, подойдёт ли заявка')).toBeInTheDocument()
     expect(screen.getByText(/никуда не отправляются и не сохраняются/)).toBeInTheDocument()
     expect(
@@ -360,9 +361,9 @@ describe('приложение', () => {
       .closest('.check-row') as HTMLElement
     await user.click(within(firstRow).getByRole('button', { name: 'Нет' }))
 
-    expect(
-      screen.getByText(/Для этой заявки не подходит — посмотрите программы без возрастного ценза/),
-    ).toBeInTheDocument()
+    expect(document.querySelector('.check-no p')?.textContent).toMatch(
+      /Для этой заявки не подходит — посмотрите программы без возрастного ценза/,
+    )
     expect(screen.getByRole('status')).toHaveTextContent(/Для этой заявки не подходит/)
     await user.click(screen.getByRole('button', { name: 'Корзина доброты' }))
     expect(window.location.hash).toBe('#/program/family/moscow/korzina')
@@ -379,7 +380,9 @@ describe('приложение', () => {
     for (const row of rows) {
       await user.click(within(row as HTMLElement).getByRole('button', { name: 'Да' }))
     }
-    expect(screen.getByText(/По основным критериям подходите/)).toBeInTheDocument()
+    expect(document.querySelector('.check-ok')?.textContent).toMatch(
+      /По основным критериям подходите/,
+    )
     expect(screen.getByRole('status')).toHaveTextContent(/По основным критериям подходите/)
     expect(screen.queryByRole('button', { name: 'Корзина доброты' })).not.toBeInTheDocument()
   })
