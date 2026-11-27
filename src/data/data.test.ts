@@ -121,11 +121,16 @@ describe('данные навигатора', () => {
     ])
   })
 
-  it('список регионов — 85 субъектов, Москва и Петербург первыми', () => {
-    expect(REGIONS).toHaveLength(85)
+  it('список регионов — 89 субъектов, Москва и Петербург первыми', () => {
+    expect(REGIONS).toHaveLength(89)
     expect(REGIONS[0].id).toBe('moscow')
     expect(REGIONS[1].id).toBe('spb')
-    expect(new Set(REGIONS.map((r) => r.id)).size).toBe(85)
+    expect(new Set(REGIONS.map((r) => r.id)).size).toBe(89)
+    const ids = REGIONS.map((r) => r.id)
+    expect(ids).toContain('dnr')
+    expect(ids).toContain('lnr')
+    expect(ids).toContain('zaporozhye')
+    expect(ids).toContain('kherson')
   })
 
   it('programsForSituation возвращает программы в порядке приоритета', () => {
