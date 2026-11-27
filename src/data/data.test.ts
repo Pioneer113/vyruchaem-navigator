@@ -54,6 +54,13 @@ describe('данные навигатора', () => {
     expect(program.deadline).toBe('2026-12-20')
     expect(program.steps[0]).toContain('елкажеланий')
     expect(program.documents.join(' ')).toMatch(/PDF/)
+    expect(program.documents.join(' ')).toContain('признании семьи малоимущей')
+    expect(program.documents.join(' ')).toContain('среднедушевом доходе ниже величины')
+    expect(program.documents.join(' ')).toContain('многодетной семьи')
+    expect(program.documents.join(' ')).not.toContain('малоимуществе')
+    expect(program.documents.join(' ')).not.toContain('Удостоверение многодетности')
+    expect(program.steps.join(' ')).toContain('открывающейся после заполнения заявки')
+    expect(program.steps[1]).toContain('бумажная')
   })
 
   it('«Корзина доброты» честно говорит: наборы развозят по спискам, прийти нельзя', () => {
@@ -81,11 +88,58 @@ describe('данные навигатора', () => {
     }
   })
 
-  it('список регионов — 85 субъектов, Москва и Петербург первыми', () => {
-    expect(REGIONS).toHaveLength(85)
+  it('статус акции и склонения уточнены', () => {
+    const text = JSON.stringify(PROGRAMS)
+    expect(text).not.toContain('организацию-партнёра')
+    expect(text).not.toContain('организацию — партнёра')
+    expect(text).not.toContain('Одинокие пожилые,')
+    expect(findProgram('ezhden')!.statusNote).toMatch(/периодически/)
+  })
+
+  it('родовые формы: тексты без «одинокий/живёте один/Слышал»', () => {
+    const text = JSON.stringify([SITUATIONS, PROGRAMS]).toLowerCase()
+    expect(text).not.toMatch(/одинокий/)
+    expect(text).not.toMatch(/живёте один(?!око)/)
+    expect(text).not.toMatch(/живу один(?!око)/)
+    expect(text).not.toMatch(/слышал/)
+    expect(text).not.toMatch(/(?<!в )семье не хватает/)
+    expect(text).toMatch(/живу одиноко/)
+    expect(text).toMatch(/в семье не хватает/)
+  })
+
+  it('срочные тексты без «карта пунктов» и «помощи и продуктов»', () => {
+    const texts = JSON.stringify([URGENT_ROUTES, URGENT_NOTE]).toLowerCase()
+    expect(texts).not.toContain('помощи и продуктов')
+    expect(texts).not.toContain('карта пунктов')
+  })
+
+  it('фудшеринг отмечен ровно в 9 регионах', () => {
+    const ids = REGIONS.filter((region) => region.foodshare)
+      .map((region) => region.id)
+      .sort()
+    expect(ids).toEqual([
+      'chelyabinsk',
+      'krasnodar',
+      'moscow',
+      'murmansk',
+      'rostov',
+      'ryazan',
+      'spb',
+      'sverdlovsk',
+      'tomsk',
+    ])
+  })
+
+  it('список регионов — 89 субъектов, Москва и Петербург первыми', () => {
+    expect(REGIONS).toHaveLength(89)
     expect(REGIONS[0].id).toBe('moscow')
     expect(REGIONS[1].id).toBe('spb')
-    expect(new Set(REGIONS.map((r) => r.id)).size).toBe(85)
+    expect(new Set(REGIONS.map((r) => r.id)).size).toBe(89)
+    const ids = REGIONS.map((r) => r.id)
+    expect(ids).toContain('dnr')
+    expect(ids).toContain('lnr')
+    expect(ids).toContain('zaporozhye')
+    expect(ids).toContain('kherson')
   })
 
   it('programsForSituation возвращает программы в порядке приоритета', () => {

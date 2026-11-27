@@ -1,5 +1,6 @@
 import { ROUTES, programsForSituation } from '../data'
 import type { Region, Situation } from '../data'
+import { telHref } from '../app/phone'
 
 interface Props {
   situation: Situation
@@ -26,28 +27,38 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
 
       {programs.length > 0 && (
         <ul className="cards">
-          {programs.map((program) => (
-            <li key={program.id} className="program-card">
-              <h2 className="pc-title">{program.title}</h2>
-              <p className="pc-benefit">{program.benefit}</p>
-              <p className="pc-meta">{program.audienceNote}</p>
-              <span className="chip">{program.statusNote}</span>
-              <button
-                className="more-btn"
-                type="button"
-                onClick={() => onOpenProgram(program.id)}
-              >
-                Подробнее
-              </button>
-            </li>
-          ))}
+          {programs.map((program) => {
+            const chipText =
+              program.id === 'foodshare'
+                ? region.foodshare
+                  ? 'Фудшеринг работает в вашем регионе'
+                  : 'В вашем регионе не подтверждён'
+                : program.statusNote
+            return (
+              <li key={program.id} className="program-card">
+                <h2 className="pc-title">{program.title}</h2>
+                <p className="pc-benefit">{program.benefit}</p>
+                <p className="pc-meta">{program.audienceNote}</p>
+                <span className="chip">{chipText}</span>
+                <button
+                  className="more-btn"
+                  type="button"
+                  onClick={() => onOpenProgram(program.id)}
+                >
+                  Подробнее
+                </button>
+              </li>
+            )
+          })}
         </ul>
       )}
 
       <h2 className="sec-h">Другие маршруты</h2>
-      <p className="small">
-        Если ни одна программа фонда не подошла — вот официальные каналы помощи.
-      </p>
+      {!isOther && (
+        <p className="small">
+          Если ни одна программа фонда не подошла — вот официальные каналы помощи.
+        </p>
+      )}
       <ul className="routes-list">
         {ROUTES.map((route) => (
           <li key={route.id} className="route-item">
@@ -55,7 +66,7 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
             <p className="r-text">{route.text}</p>
             <div className="r-links">
               {route.phone && (
-                <a href={`tel:${route.phone.replace(/\s/g, '')}`}>{route.phone}</a>
+                <a href={telHref(route.phone)}>{route.phone}</a>
               )}
               {route.url && (
                 <a href={route.url} target="_blank" rel="noreferrer">
@@ -66,10 +77,6 @@ export function ResultScreen({ situation, region, onBack, onOpenProgram }: Props
           </li>
         ))}
       </ul>
-
-      <p className="note">
-        Мы не фонд и не принимаем заявки. Помощь выдают фонд «Выручаем» и его партнёры.
-      </p>
     </section>
   )
 }

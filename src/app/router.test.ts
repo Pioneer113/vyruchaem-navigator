@@ -46,11 +46,16 @@ describe('маршруты', () => {
     expect(parseRoute('#/program/pensioner/moscow/nope')).toEqual({ name: 'home' })
   })
 
+  it('срочный экран без региона', () => {
+    expect(parseRoute('#/urgent')).toEqual({ name: 'urgent' })
+  })
+
   it('hashFor собирает адреса', () => {
     expect(hashFor.result('pensioner', 'moscow')).toBe('#/result/pensioner/moscow')
     expect(hashFor.situation('family')).toBe('#/situation/family')
     expect(hashFor.program('pensioner', 'moscow', 'ezhden')).toBe(
       '#/program/pensioner/moscow/ezhden',
     )
+    expect(hashFor.urgent()).toBe('#/urgent')
   })
 })

@@ -131,7 +131,7 @@ h1 {
 
 .popular {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px;
   margin-top: 24px;
 }
@@ -145,10 +145,17 @@ h1 {
   border: none;
   border-radius: 16px;
   cursor: pointer;
+  overflow-wrap: anywhere;
 }
 
 .popular button:hover {
   background: #1e4636;
+}
+
+@media (max-width: 359px) {
+  .popular {
+    grid-template-columns: 1fr;
+  }
 }
 
 .search {
@@ -216,8 +223,8 @@ h1 {
 .foot {
   margin-top: auto;
   padding-top: 40px;
-  color: #8a9a8e;
-  font-size: 13px;
+  color: #5c6d61;
+  font-size: 15px;
   line-height: 1.5;
 }
 
@@ -310,6 +317,16 @@ h1 {
   font-size: 14px;
   color: var(--ink-soft);
   line-height: 1.5;
+}
+
+.region-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* Карточка программы */
@@ -478,6 +495,7 @@ h1 {
 /* Размер шрифта и шапка */
 .topbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;

@@ -12,15 +12,22 @@ describe('приложение', () => {
   it('показывает ситуации на главной', () => {
     render(<App />)
     expect(screen.getByText('Какая помощь вам нужна?')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Я одинокий пенсионер' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Я пожилой человек, живу одиноко' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Мне нечего есть прямо сейчас' })).toBeInTheDocument()
+  })
+
+  it('футер доступен по стабильному селектору и содержит дисклеймер', () => {
+    render(<App />)
+    const footer = screen.getByTestId('footer-note')
+    expect(footer).toHaveTextContent('Не фонд: заявки и деньги не принимаем')
+    expect(footer).not.toHaveAttribute('style')
   })
 
   it('ведёт от ситуации к карточкам программ и деталям', async () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Я одинокий пенсионер' }))
+    await user.click(screen.getByRole('button', { name: 'Я пожилой человек, живу одиноко' }))
     expect(await screen.findByText('Где вы живёте?')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: /Москва/ }))
@@ -35,27 +42,45 @@ describe('приложение', () => {
     expect(within(scope).getByText(/Проверено 26\.11\.2026/)).toBeInTheDocument()
   })
 
-  it('для срочной ситуации показывает маршруты «сегодня»', async () => {
+  it('для срочной ситуации сразу показывает маршруты «сегодня»', async () => {
     const user = userEvent.setup()
     render(<App />)
 
     await user.click(screen.getByRole('button', { name: 'Мне нечего есть прямо сейчас' }))
-    await user.click(await screen.findByRole('button', { name: /Москва/ }))
 
     expect(await screen.findByText('Если еды нет совсем')).toBeInTheDocument()
     expect(screen.getByText('112')).toBeInTheDocument()
     expect(screen.getByText(/не выдаёт еду в день обращения/)).toBeInTheDocument()
+    expect(screen.getByText('Уточнить помощь в моём регионе')).toBeInTheDocument()
+    expect(screen.getByText('8 800 234-07-07').closest('a')).toHaveAttribute(
+      'href',
+      'tel:+78002340707',
+    )
+    expect(window.location.hash).toBe('#/urgent')
+  })
+
+  it('глубокая ссылка #/result/urgent/moscow продолжает работать', async () => {
+    window.location.hash = '#/result/urgent/moscow'
+    render(<App />)
+
+    expect(await screen.findByText('Если еды нет совсем')).toBeInTheDocument()
+    expect(screen.getByText(/Москва\./)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '← Изменить регион' })).toBeInTheDocument()
   })
 
   it('показывает другие маршруты под карточками программ', async () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Я одинокий пенсионер' }))
+    await user.click(screen.getByRole('button', { name: 'Я пожилой человек, живу одиноко' }))
     await user.click(await screen.findByRole('button', { name: /Москва/ }))
 
     expect(await screen.findByText('Другие маршруты')).toBeInTheDocument()
     expect(screen.getByText('Банк еды «Русь»')).toBeInTheDocument()
+    expect(screen.getByText('8 800 234-07-07').closest('a')).toHaveAttribute(
+      'href',
+      'tel:+78002340707',
+    )
   })
 
   it('для «другая ситуация» показывает только маршруты', async () => {
@@ -87,7 +112,7 @@ describe('приложение', () => {
     const printSpy = vi.spyOn(window, 'print').mockImplementation(() => {})
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Я одинокий пенсионер' }))
+    await user.click(screen.getByRole('button', { name: 'Я пожилой человек, живу одиноко' }))
     await user.click(await screen.findByRole('button', { name: /Москва/ }))
     await user.click(screen.getAllByRole('button', { name: 'Подробнее' })[0])
     await user.click(await screen.findByRole('button', { name: 'Распечатать памятку' }))
@@ -99,5 +124,31 @@ describe('приложение', () => {
     expect(within(memo).getByText(/всё равно обратитесь/)).toBeInTheDocument()
 
     printSpy.mockRestore()
+  })
+
+  it('фудшеринг учитывает регион: Москву подтверждает', async () => {
+    window.location.hash = '#/result/pensioner/moscow'
+    render(<App />)
+
+    expect(await screen.findByText('Фудшеринг работает в вашем регионе')).toBeInTheDocument()
+  })
+
+  it('фудшеринг честно говорит, если регион не подтверждён', async () => {
+    window.location.hash = '#/result/pensioner/tatarstan'
+    render(<App />)
+
+    expect(await screen.findByText('В вашем регионе не подтверждён')).toBeInTheDocument()
+  })
+
+  it('не дублирует дисклеймеры на экране «другая ситуация»', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Моя ситуация другая' }))
+    await user.click(await screen.findByRole('button', { name: /Москва/ }))
+
+    expect(screen.queryByText(/Мы не фонд и не принимаем заявки/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Если ни одна программа фонда не подошла/)).not.toBeInTheDocument()
+    expect(screen.getByText(/Не фонд: заявки и деньги не принимаем/)).toBeInTheDocument()
   })
 })
