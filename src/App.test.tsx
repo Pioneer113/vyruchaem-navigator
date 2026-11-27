@@ -321,4 +321,38 @@ describe('приложение', () => {
     )
     expect(window.location.hash).toBe('#/certificate')
   })
+
+  it('чек критериев «Праздника»: «Нет» даёт объяснение и путь к «Корзине»', async () => {
+    const user = userEvent.setup()
+    window.location.hash = '#/program/family/moscow/prazdnik'
+    render(<App />)
+
+    expect(screen.getByText('Проверьте за 10 секунд, подойдёт ли заявка')).toBeInTheDocument()
+    expect(screen.getByText(/никуда не отправляются и не сохраняются/)).toBeInTheDocument()
+    const firstRow = screen
+      .getByText('Есть ли в семье ребёнок от 3 до 17 лет включительно?')
+      .closest('.check-row') as HTMLElement
+    await user.click(within(firstRow).getByRole('button', { name: 'Нет' }))
+
+    expect(
+      screen.getByText(/Для этой заявки не подходит — посмотрите программы без возрастного ценза/),
+    ).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Корзина доброты' }))
+    expect(window.location.hash).toBe('#/program/family/moscow/korzina')
+    expect(await screen.findByRole('button', { name: 'Распечатать памятку' })).toBeInTheDocument()
+    expect(document.querySelector('.screen h1')?.textContent).toBe('Корзина доброты')
+  })
+
+  it('чек критериев «Праздника»: три «Да» — можно заполнять заявку', async () => {
+    const user = userEvent.setup()
+    window.location.hash = '#/program/family/moscow/prazdnik'
+    render(<App />)
+
+    const rows = document.querySelectorAll('.check-row')
+    for (const row of rows) {
+      await user.click(within(row as HTMLElement).getByRole('button', { name: 'Да' }))
+    }
+    expect(screen.getByText(/По основным критериям подходите/)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Корзина доброты' })).not.toBeInTheDocument()
+  })
 })

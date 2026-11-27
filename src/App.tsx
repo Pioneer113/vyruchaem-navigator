@@ -109,6 +109,9 @@ export default function App() {
           situation={situation}
           region={findRegion(route.regionId)!}
           onBack={() => navigate(hashFor.result(route.situationId, route.regionId))}
+          onOpenProgram={(programId) =>
+            navigate(hashFor.program(route.situationId, route.regionId, programId))
+          }
         />
       )}
 

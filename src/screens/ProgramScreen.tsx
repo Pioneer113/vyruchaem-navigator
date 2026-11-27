@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import qrHome from '../assets/qr-home.svg'
 import type { Program, Region, Situation } from '../data'
 import { formatDate } from '../app/dates'
@@ -7,9 +8,94 @@ interface Props {
   situation: Situation
   region: Region
   onBack: () => void
+  onOpenProgram?: (programId: string) => void
 }
 
-export function ProgramScreen({ program, situation, region, onBack }: Props) {
+const READINESS_QUESTIONS = [
+  {
+    text: 'Есть ли в семье ребёнок от 3 до 17 лет включительно?',
+    reason:
+      'В акции участвуют семьи с ребёнком от 3 до 17 лет включительно. Для этой заявки не подходит — посмотрите программы без возрастного ценза.',
+  },
+  {
+    text: 'Среднедушевой доход семьи ниже прожиточного минимума в регионе?',
+    reason:
+      'Заявка рассчитана на семьи с доходом ниже прожиточного минимума — это подтверждается справкой. Без неё заявку не примут; удостоверение многодетной семьи не заменяет справку о доходе.',
+  },
+  {
+    text: 'Есть ли справка о малоимущем статусе/доходе — бумажная с печатью или PDF с Госуслуг, не старше сентября 2025 года?',
+    reason:
+      'Нужна справка о малоимущем статусе или доходе: бумажная с подписью и печатью либо PDF с Госуслуг, не старше сентября 2025 года. Скриншот не подойдёт. Удостоверение многодетной семьи не заменяет справку.',
+  },
+]
+
+function ReadinessCheck({
+  onOpenProgram,
+  onShowRoutes,
+}: {
+  onOpenProgram?: (programId: string) => void
+  onShowRoutes: () => void
+}) {
+  const [answers, setAnswers] = useState<(boolean | null)[]>([null, null, null])
+  const allAnswered = answers.every((answer) => answer !== null)
+  const firstNo = answers.findIndex((answer) => answer === false)
+
+  const setAnswer = (index: number, value: boolean) => {
+    setAnswers((prev) => prev.map((answer, i) => (i === index ? value : answer)))
+  }
+
+  return (
+    <div className="check">
+      <h2 className="sec-h">Проверьте за 10 секунд, подойдёт ли заявка</h2>
+      <p className="small">Ответы никуда не отправляются и не сохраняются.</p>
+      {READINESS_QUESTIONS.map((question, index) => (
+        <div key={question.text} className="check-row">
+          <p>{question.text}</p>
+          <div className="check-btns">
+            <button
+              type="button"
+              aria-pressed={answers[index] === true}
+              onClick={() => setAnswer(index, true)}
+            >
+              Да
+            </button>
+            <button
+              type="button"
+              aria-pressed={answers[index] === false}
+              onClick={() => setAnswer(index, false)}
+            >
+              Нет
+            </button>
+          </div>
+        </div>
+      ))}
+      {allAnswered && firstNo === -1 && (
+        <p className="check-ok">
+          По основным критериям подходите — можно заполнять заявку на елкажеланий.рф
+        </p>
+      )}
+      {firstNo !== -1 && (
+        <div className="check-no">
+          <p>{READINESS_QUESTIONS[firstNo].reason}</p>
+          <div className="check-alts">
+            <button
+              type="button"
+              className="more-btn"
+              onClick={() => onOpenProgram?.('korzina')}
+            >
+              Корзина доброты
+            </button>
+            <button type="button" className="more-btn" onClick={onShowRoutes}>
+              Другие маршруты
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function ProgramScreen({ program, situation, region, onBack, onOpenProgram }: Props) {
   const inHelper = situation.id === 'helper'
   const steps = inHelper ? (program.stepsHelper ?? program.steps) : program.steps
   const sayScript = inHelper
@@ -39,6 +125,10 @@ export function ProgramScreen({ program, situation, region, onBack }: Props) {
           <p className="small">
             В вашем регионе: {region.foodshare ? 'подтверждено' : 'не подтверждено'}.
           </p>
+        )}
+
+        {program.id === 'prazdnik' && (
+          <ReadinessCheck onOpenProgram={onOpenProgram} onShowRoutes={onBack} />
         )}
 
         <h2 className="sec-h">Как получить</h2>
