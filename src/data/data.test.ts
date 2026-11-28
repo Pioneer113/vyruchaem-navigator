@@ -79,6 +79,12 @@ describe('данные навигатора', () => {
     expect(URGENT_NOTE).toMatch(/не выдаёт еду в день обращения/)
   })
 
+  it('мёртвая карта «Полезный Город» убрана со срочного экрана', () => {
+    const ids = URGENT_ROUTES.map((route) => route.id)
+    expect(ids).not.toContain('map-city')
+    expect(JSON.stringify(URGENT_ROUTES)).not.toContain('полезныйгород')
+  })
+
   it('другие маршруты: соцзащита, Красный Крест, банк еды, Добро.Навигатор', () => {
     const ids = ROUTES.map((route) => route.id)
     expect(ids).toContain('szn')

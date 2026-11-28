@@ -272,6 +272,17 @@ describe('приложение', () => {
     )
   })
 
+  it('срочный экран не ведёт на нерабочий «Полезный Город», HelpFood остаётся', () => {
+    window.location.hash = '#/urgent'
+    render(<App />)
+
+    expect(screen.queryByText(/Полезный Город/)).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'helpfood.ru' })).toHaveAttribute(
+      'href',
+      'https://helpfood.ru/',
+    )
+  })
+
   it('пенсионеру показывается ежедневная скидка 10%', () => {
     window.location.hash = '#/result/pensioner/moscow'
     render(<App />)
