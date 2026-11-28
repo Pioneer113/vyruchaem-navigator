@@ -97,13 +97,6 @@ export const URGENT_ROUTES: UrgentRoute[] = [
     urlLabel: 'foodbankrus.ru',
   },
   {
-    id: 'map-city',
-    title: 'Карта «Полезный Город»',
-    text: 'Пункты помощи и выдачи продуктов в 650+ городах — с адресами и часами работы.',
-    url: 'https://полезныйгород.рф/',
-    urlLabel: 'полезныйгород.рф',
-  },
-  {
     id: 'helpfood',
     title: 'HelpFood',
     text: 'Карта «корзин» и «холодильников» с бесплатными продуктами.',
